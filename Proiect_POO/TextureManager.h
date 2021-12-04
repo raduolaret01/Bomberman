@@ -16,9 +16,16 @@ enum class TextureEnum {
 	Bomb
 };
 
+enum class FontEnum {
+	Menu,
+	BombCounter,
+	SmallText
+};
+
 class TextureManager{
 public:
 	static SDL_Texture* Texture[5];
+	static TTF_Font* Font[3];
 	static SDL_Renderer* Renderer;
 
 	TextureManager();
@@ -28,5 +35,8 @@ public:
 	static bool loadTextures(void);
 	static void freeTextures(void);
 
+	static TTF_Font* loadFont(const char*,int);
+	static bool loadFonts(void);
+	static void freeFonts(void);
 };
 
