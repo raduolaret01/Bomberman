@@ -53,13 +53,12 @@ void Game::Init(void) {
 	SDL_RenderCopy(Renderer, TextureManager::Texture[(int)TextureEnum::Splash], NULL, NULL);
 	SDL_RenderPresent(Renderer);
 
+	SoundManager::loadBGM();
+	SoundManager::loadSFX();
 
-	Mix_Chunk* bruh = Mix_LoadWAV("Resources/sus.mp3");
-	Mix_PlayChannel(-1, bruh, 0);
+	Mix_PlayChannel(-1, SoundManager::SFX[(int)SFXEnum::Splash], 0);
 	SDL_Delay(4000);
 
-	Mix_FreeChunk(bruh);
-	bruh = NULL;
 }
 
 void Game::Quit(void) {
@@ -67,6 +66,8 @@ void Game::Quit(void) {
 	TextureManager::Renderer = NULL;
 	SDL_DestroyWindow(gameWindow);
 	gameWindow = NULL;
+	TextureManager::freeTextures();
+	SoundManager::freeSounds();
 	IMG_Quit();
 	SDL_Quit();
 }

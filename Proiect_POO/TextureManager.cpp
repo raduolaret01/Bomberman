@@ -37,11 +37,19 @@ SDL_Texture* TextureManager::loadTexture(const char* path) {
 	//Create texture from surface pixels
 	newTexture = SDL_CreateTextureFromSurface(Renderer, loadedSurface);
 	if (newTexture == NULL) {
-		printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
+		printf("Unable to create texture from %s! SDL_image Error: %s\n", path, IMG_GetError());
 	}
 
 	//Get rid of old loaded surface
 	SDL_FreeSurface(loadedSurface);
 
 	return newTexture;
+}
+
+void TextureManager::freeTextures() {
+	for (int i = 0; i < 4; ++i) {
+		if (Texture[i])
+			SDL_DestroyTexture(Texture[i]);
+		Texture[i] = NULL;
+	}
 }
