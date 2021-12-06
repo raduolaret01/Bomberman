@@ -74,7 +74,7 @@ TTF_Font* TextureManager::loadFont(const char* path,int pxSize) {
 }
 
 bool TextureManager::loadFonts() {
-	Font[(int)FontEnum::Menu] = loadFont("Resources/Lato-Regular.ttf", 25);
+	Font[(int)FontEnum::Menu] = loadFont("Resources/Lato-Regular.ttf", 30);
 	if (Font[(int)FontEnum::Menu] == NULL) {
 		return false;
 	}

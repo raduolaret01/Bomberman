@@ -1,10 +1,10 @@
 #include "Game.h"
 
-bool Game::quitFlag = false;
 
 Game::Game() {
 	gameWindow = NULL;
-	quitFlag = 0;
+	quitFlag = false;
+	MainM = new MainMenu;
 }
 
 Game::~Game() {
@@ -17,10 +17,6 @@ bool Game::getQuitFlag() {
 
 void Game::setQuitFlag() {
 	quitFlag = true;
-}
-
-void Game::clearQuitFlag() {
-	quitFlag = false;
 }
 
 void Game::Init(void) {
@@ -72,11 +68,13 @@ void Game::Init(void) {
 	SDL_SetRenderDrawColor(TextureManager::Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(TextureManager::Renderer);
 
-	Button quit({ 250,150,100,50 }, setQuitFlag, "Quit");
+	MainM->Init();
+	MainM->Show();
 
 }
 
 void Game::Quit(void) {
+	MainM->Free();
 	SDL_DestroyRenderer(TextureManager::Renderer);
 	TextureManager::Renderer = NULL;
 	SDL_DestroyWindow(gameWindow);

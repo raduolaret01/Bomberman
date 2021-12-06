@@ -47,30 +47,32 @@ Button::Button(SDL_Rect dim, void(*function)(void), const char* label) {
                 //Get image dimensions
                 tWidth = textSurface->w;
                 tHeight = textSurface->h;
+                //Set text to render centered
+                temp.x = (dim.w - tWidth) / 2;
+                temp.y = (dim.h - tHeight) / 2;
+                temp.w = tWidth;
+                temp.h = tHeight;
+                SDL_RenderCopy(TextureManager::Renderer, tTexture, NULL, &temp);
+                SDL_RenderPresent(TextureManager::Renderer);
+                //Get rid of old surface
+                SDL_FreeSurface(textSurface);
+                SDL_DestroyTexture(tTexture);
             }
-            temp.x = (dim.w - tWidth) / 2;
-            temp.y = (dim.h - tHeight) / 2;
-            temp.w = tWidth;
-            temp.h = tHeight;
-            SDL_RenderCopy(TextureManager::Renderer, tTexture, NULL, &temp);
-            SDL_RenderPresent(TextureManager::Renderer);
-            //Get rid of old surface
-            SDL_FreeSurface(textSurface);
-            SDL_DestroyTexture(tTexture);
         }
         SDL_SetRenderTarget(TextureManager::Renderer, NULL);
-        SDL_RenderCopy(TextureManager::Renderer, this->Texture, NULL, &dim);
-        SDL_RenderPresent(TextureManager::Renderer);
+        
     }
 }
 
 Button::~Button() {
-    if (Texture)
+    if (Texture) {
         SDL_DestroyTexture(Texture);
-    Texture = NULL;
-    if (label)
+        Texture = NULL;
+    }
+    if (label) {
         delete[] label;
-    label = NULL;
+        label = NULL;
+    }
     functionality = NULL;
 }
 
@@ -82,24 +84,12 @@ void Button::handleEvent(SDL_Event* e) {
         int x, y;
         SDL_GetMouseState(&x, &y);
         //Check if mouse is in button
-        bool inside = true;
+        bool inside = false;
 
-        //Mouse is left of the button
-        if (x < dim.x) {
-            inside = false;
+        if (x > dim.x && x<dim.x + dim.w && y>dim.y && y < dim.y + dim.h) {
+            inside = true;
         }
-        //Mouse is right of the button
-        else if (x > dim.x + dim.w) {
-            inside = false;
-        }
-        //Mouse above the button
-        else if (y < dim.y) {
-            inside = false;
-        }
-        //Mouse below the button
-        else if (y > dim.y + dim.h) {
-            inside = false;
-        }
+        
         //Mouse is inside button
         if(inside) {
             //Set mouse over sprite
@@ -114,4 +104,9 @@ void Button::handleEvent(SDL_Event* e) {
             }
         }
     }
+}
+
+void Button::Show() {
+    SDL_RenderCopy(TextureManager::Renderer, this->Texture, NULL, &dim);
+    SDL_RenderPresent(TextureManager::Renderer);
 }

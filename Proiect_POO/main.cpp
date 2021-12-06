@@ -10,12 +10,19 @@ int main() {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT)
 				isRunning = false;
-
+			while (G.MainM->isShown && !(G.MainM->getQuitFlag()) && isRunning) {
+				if (e.type == SDL_QUIT)
+					isRunning = false;
+				while (SDL_PollEvent(&e) != 0) {
+					for (int i = 0; i < 6; ++i) {
+						G.MainM->ButtonArray[i]->handleEvent(&e);
+					}
+				}
+			}
 		}
-		if (G.getQuitFlag())
+		if (G.getQuitFlag() || G.MainM->getQuitFlag());
 			isRunning = false;
 	}
 
-	G.Quit();
 	return 0;
 }
