@@ -10,11 +10,11 @@ int main() {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT)
 				isRunning = false;
-			while (G.MainM->isShown && !(G.MainM->getQuitFlag()) && isRunning) {
+			while (G.MainM->getMainMenuFlag() && !(G.MainM->getQuitFlag()) && isRunning) {
 				if (e.type == SDL_QUIT)
 					isRunning = false;
 				while (SDL_PollEvent(&e) != 0) {
-					for (int i = 0; i < 6; ++i) {
+					for (int i = 0; i < 3; ++i) {
 						G.MainM->ButtonArray[i]->handleEvent(&e);
 					}
 				}

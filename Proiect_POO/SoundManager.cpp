@@ -29,7 +29,7 @@ Mix_Chunk* SoundManager::loadSoundEffect(const char* path) {
 }
 
 bool SoundManager::loadSFX() {
-	SFX[(int)SFXEnum::Splash] = loadSoundEffect("Resources/sus.mp3");
+	SFX[Splash] = loadSoundEffect("Resources/sus.mp3");
 	if (SFX[(int)SFXEnum::Splash] == NULL) {
 		return false;
 	}

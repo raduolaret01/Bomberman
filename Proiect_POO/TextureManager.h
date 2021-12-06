@@ -8,22 +8,22 @@
 #include <SDL_hints.h>
 #include <SDL_ttf.h>
 
-enum class TextureEnum {
-	Splash,
-	Background,
-	Player,
-	Block,
-	Bomb
-};
-
-enum class FontEnum {
-	Menu,
-	BombCounter,
-	SmallText
-};
-
 class TextureManager{
 public:
+	 enum TextureEnum {
+		Splash,
+		Background,
+		Player,
+		Block,
+		Bomb
+	};
+
+	enum FontEnum {
+		Menu,
+		BombCounter,
+		SmallText
+	};
+
 	static SDL_Texture* Texture[5];
 	static TTF_Font* Font[3];
 	static SDL_Renderer* Renderer;

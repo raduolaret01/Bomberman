@@ -3,25 +3,29 @@
 #include <stdio.h>
 #include <SDL_mixer.h>
 
-enum class MusicEnum {
-	Menu,
-	Game
-};
 
-enum class SFXEnum {
-	Splash,
-	Click,
-	Bomb_Place,
-	Bomb_Fuze,
-	Bomb_Boom,
-	Step,
-	PowerUp_PickUp,
-	NPC_Death,
-	Player_Death
-};
+
+
 
 class SoundManager{
 public:
+	enum MusicEnum {
+		Menu,
+		Game
+	};
+
+	enum SFXEnum {
+		Splash,
+		Click,
+		Bomb_Place,
+		Bomb_Fuze,
+		Bomb_Boom,
+		Step,
+		PowerUp_PickUp,
+		NPC_Death,
+		Player_Death
+	};
+
 	static Mix_Music* BGM[2];
 	static Mix_Chunk* SFX[10];
 

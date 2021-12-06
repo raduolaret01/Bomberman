@@ -57,13 +57,13 @@ void Game::Init(void) {
 	TextureManager::loadTextures();
 	TextureManager::loadFonts();
 
-	SDL_RenderCopy(Renderer, TextureManager::Texture[(int)TextureEnum::Splash], NULL, NULL);
+	SDL_RenderCopy(Renderer, TextureManager::Texture[TextureManager::Splash], NULL, NULL);
 	SDL_RenderPresent(Renderer);
 
 	SoundManager::loadBGM();
 	SoundManager::loadSFX();
 
-	Mix_PlayChannel(-1, SoundManager::SFX[(int)SFXEnum::Splash], 0);
+	Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Splash], 0);
 	SDL_Delay(4000);
 	SDL_SetRenderDrawColor(TextureManager::Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(TextureManager::Renderer);
@@ -74,7 +74,7 @@ void Game::Init(void) {
 }
 
 void Game::Quit(void) {
-	MainM->Free();
+	MainM->~MainMenu();
 	SDL_DestroyRenderer(TextureManager::Renderer);
 	TextureManager::Renderer = NULL;
 	SDL_DestroyWindow(gameWindow);

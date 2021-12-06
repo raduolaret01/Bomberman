@@ -5,20 +5,39 @@
 
 class Menu {
 protected:
-	char* title;
+	//Flags are necessary to avoid circular dependecy with Game
 	static bool quitFlag;
+	static int loadLevelFlag;
+	static bool reloadFlag;
+	static bool isInMainMenuFlag;
+	static bool isInPauseMenuFlag;
 public:
 	Button** ButtonArray;
-	bool isShown;
 
 	Menu();
 	~Menu();
+
+#pragma region FlagFunctions
 	bool getQuitFlag(void);
 	static void setQuitFlag(void);
+	int getLoadLevelFlag(void);
+	static void loadLevel1(void);
+	static void loadLevel2(void);
+	static void loadLevel3(void);
+	static void loadLevel4(void);
+	static void loadLevel5(void);
+	bool getReloadFlag(void);
+	static void setReloadFlag(void);
+	bool getMainMenuFlag(void);
+	static void setMainMenuFlag(void);
+	bool getPauseMenuFlag(void);
+	static void setPauseMenuFlag(void);
+	static void clearPauseMenuFlag(void);
+#pragma endregion
+
 	virtual void Init(void) = 0;
-	virtual void Free(void) = 0;
 	virtual void Show(void) = 0;
-	void Hide(void);
+	virtual void Hide(void) = 0;
 };
 
 class MainMenu :public Menu {
@@ -28,28 +47,29 @@ public:
 		Load_1p_1,
 		Load_1p_2,
 		Load_1p_3,
-		Load_2p_1,
-		Load_2p_2
+		Load_2p_coop,
+		Load_2p_vs
 	};
 
 	MainMenu();
 	~MainMenu();
 	void Init(void);
-	void Free(void);
 	void Show(void);
+	void Hide(void);
 };
-//
-//class PauseMenu :public Menu {
-//public:
-//	enum Buttons {
-//		Quit,
-//		QuitToMenu,
-//		Resume
-//	};
-//
-//	void Init(void);
-//	void Free(void);
-//	void Show(void);
-//	void Hide(void);
-//};
+
+class PauseMenu :public Menu {
+public:
+	enum Buttons {
+		Quit,
+		QuitToMenu,
+		Resume
+	};
+
+	PauseMenu();
+	~PauseMenu();
+	void Init(void);
+	void Show(void);
+	void Hide(void);
+};
 

@@ -25,8 +25,8 @@ TextureManager::~TextureManager() {
 }
 
 bool TextureManager::loadTextures(void) {
-	Texture[(int)TextureEnum::Splash] = loadTexture("Resources/sus.png");
-	if (Texture[(int)TextureEnum::Splash] == NULL) {
+	Texture[Splash] = loadTexture("Resources/sus.png");
+	if (Texture[Splash] == NULL) {
 		return false;
 	}
 	return true;
@@ -75,15 +75,15 @@ TTF_Font* TextureManager::loadFont(const char* path,int pxSize) {
 
 bool TextureManager::loadFonts() {
 	Font[(int)FontEnum::Menu] = loadFont("Resources/Lato-Regular.ttf", 30);
-	if (Font[(int)FontEnum::Menu] == NULL) {
+	if (Font[Menu] == NULL) {
 		return false;
 	}
 	Font[(int)FontEnum::BombCounter] = loadFont("Resources/FFF_Tusj.ttf", 20);
-	if (Font[(int)FontEnum::BombCounter] == NULL) {
+	if (Font[BombCounter] == NULL) {
 		return false;
 	}
 	Font[(int)FontEnum::SmallText] = loadFont("Resources/Walkway_Bold.ttf", 6);
-	if (Font[(int)FontEnum::SmallText] == NULL) {
+	if (Font[SmallText] == NULL) {
 		return false;
 	}
 	return true;
