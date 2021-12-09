@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 #include "Menu.h"
+#include "LevelLoader.h"
 
 
 
@@ -12,6 +13,8 @@ private:
 	bool quitFlag;
 public:
 	MainMenu* MainM;
+	LevelLoader levelLoader;
+	Level level;
 	Game();
 	~Game();
 	bool getQuitFlag(void);

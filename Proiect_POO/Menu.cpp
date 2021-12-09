@@ -13,6 +13,10 @@ Menu::Menu() {
 Menu::~Menu() {}
 
 #pragma region FlagFunctionsDef
+void Menu::clearFlags() {
+	loadLevelFlag = 0;
+	reloadFlag = false;
+}
 
 bool Menu::getQuitFlag() {
 	return quitFlag;
@@ -28,22 +32,27 @@ int Menu::getLoadLevelFlag() {
 
 void Menu::loadLevel1() {
 	loadLevelFlag = 1;
+	isInMainMenuFlag = false;
 }
 
 void Menu::loadLevel2() {
 	loadLevelFlag = 2;
+	isInMainMenuFlag = false;
 }
 
 void Menu::loadLevel3() {
 	loadLevelFlag = 3;
+	isInMainMenuFlag = false;
 }
 
 void Menu::loadLevel4() {
 	loadLevelFlag = 4;
+	isInMainMenuFlag = false;
 }
 
 void Menu::loadLevel5() {
 	loadLevelFlag = 5;
+	isInMainMenuFlag = false;
 }
 
 bool Menu::getReloadFlag() {

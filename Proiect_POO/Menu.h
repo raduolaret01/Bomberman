@@ -18,6 +18,7 @@ public:
 	~Menu();
 
 #pragma region FlagFunctions
+	static void clearFlags(void);
 	bool getQuitFlag(void);
 	static void setQuitFlag(void);
 	int getLoadLevelFlag(void);

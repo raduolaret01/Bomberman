@@ -12,10 +12,12 @@ class TextureManager{
 public:
 	 enum TextureEnum {
 		Splash,
-		Background,
-		Player,
-		Block,
-		Bomb
+		BombTileSet,
+		Player1,
+		Player2,
+		PlayerAI,
+		LevelMap,
+		LevelTileSet,
 	};
 
 	enum FontEnum {
@@ -24,7 +26,7 @@ public:
 		SmallText
 	};
 
-	static SDL_Texture* Texture[5];
+	static SDL_Texture* Texture[7];
 	static TTF_Font* Font[3];
 	static SDL_Renderer* Renderer;
 

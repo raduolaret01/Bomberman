@@ -19,6 +19,10 @@ int main() {
 					}
 				}
 			}
+			if (G.MainM->getLoadLevelFlag()) {
+				G.levelLoader.loadLevel(&G.level, G.MainM->getLoadLevelFlag());
+				Menu::clearFlags();
+			}
 		}
 		if (G.getQuitFlag() || G.MainM->getQuitFlag());
 			isRunning = false;
