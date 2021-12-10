@@ -24,5 +24,7 @@ public:
 
 	Level();
 	~Level();
+	
+	void Show();
 };
 

@@ -11,7 +11,10 @@ protected:
 	static bool reloadFlag;
 	static bool isInMainMenuFlag;
 	static bool isInPauseMenuFlag;
+
 public:
+
+	SDL_Texture* Background;
 	Button** ButtonArray;
 
 	Menu();
@@ -39,6 +42,7 @@ public:
 	virtual void Init(void) = 0;
 	virtual void Show(void) = 0;
 	virtual void Hide(void) = 0;
+	virtual void Destroy(void) = 0;
 };
 
 class MainMenu :public Menu {
@@ -57,6 +61,7 @@ public:
 	void Init(void);
 	void Show(void);
 	void Hide(void);
+	void Destroy(void);
 };
 
 class PauseMenu :public Menu {
@@ -72,5 +77,6 @@ public:
 	void Init(void);
 	void Show(void);
 	void Hide(void);
+	void Destroy(void);
 };
 

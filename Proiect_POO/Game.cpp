@@ -4,7 +4,9 @@
 Game::Game() {
 	gameWindow = NULL;
 	quitFlag = false;
-	MainM = new MainMenu;
+	Menus[Main] = new MainMenu;
+	Menus[Pause] = new PauseMenu;
+	level = new Level;
 }
 
 Game::~Game() {
@@ -68,13 +70,16 @@ void Game::Init(void) {
 	SDL_SetRenderDrawColor(TextureManager::Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(TextureManager::Renderer);
 
-	MainM->Init();
-	MainM->Show();
+	Menus[Main]->Init();
+	Menus[Pause]->Init();
+	Menus[Main]->Show();
+	Menu::setMainMenuFlag();
 
 }
 
 void Game::Quit(void) {
-	MainM->~MainMenu();
+	Menus[Main]->Destroy();
+	Menus[Pause]->Destroy();
 	SDL_DestroyRenderer(TextureManager::Renderer);
 	TextureManager::Renderer = NULL;
 	SDL_DestroyWindow(gameWindow);

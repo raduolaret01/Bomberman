@@ -1,6 +1,8 @@
 #include "Level.h"
 
 Level::Level() {
+	mapH = mapW = 0;
+	specialMechanics = 0;
 	map = NULL;
 	objectCount = NULL;
 }
@@ -20,4 +22,9 @@ Level::~Level() {
 		delete[] objectCount;
 		objectCount = NULL;
 	}
+}
+
+void Level::Show() {
+	SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelMap], NULL, NULL);
+	SDL_RenderPresent(TextureManager::Renderer);
 }

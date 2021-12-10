@@ -1,48 +1,42 @@
 #include "LevelLoader.h"
 
 LevelLoader::LevelLoader() {
-	levelFile = NULL;
+	levelLoaded = false;
 }
 
 LevelLoader::~LevelLoader() {
-	if (levelFile) {
-		SDL_RWclose(levelFile);
-		levelFile = NULL;
+	if (levelFile.is_open()) {
+		levelFile.close();
 	}
 }
 
 bool LevelLoader::loadLevel(Level* level, int levelId) {
 	switch (levelId) {
 	case sp_1:
-		levelFile = SDL_RWFromFile("Resources/level1.txt", "r");
+		levelFile.open("Resources/level1.txt");
 		break;
 	case sp_2:
-		levelFile = SDL_RWFromFile("Resources/level2.txt", "r");
+		levelFile.open("Resources/level2.txt");
 		break;
 	case sp_3:
-		levelFile = SDL_RWFromFile("Resources/level3.txt", "r");
+		levelFile.open("Resources/level3.txt");
 		break;
 	case mp_coop:
-		levelFile = SDL_RWFromFile("Resources/level4.txt", "r");
+		levelFile.open("Resources/level4.txt");
 		break;
 	case mp_vs:
-		levelFile = SDL_RWFromFile("Resources/level5.txt", "r");
+		levelFile.open("Resources/level5.txt");
 		break;
 	default:
 		printf("Error: Level not implemented!\n");
 		return false;
 	}
-	if (levelFile == NULL) {
-		printf("Error opening level file! SDL error: %s\n", SDL_GetError());
+	if (!levelFile.is_open()) {
+		printf("Error opening level file!");
 		return false;
 	}
 	int w, h;
-	char* buffer = new char[200];
-	SDL_RWread(levelFile, &h, sizeof(int), 1);
-	SDL_RWread(levelFile, buffer, sizeof(char), 1);
-	SDL_RWread(levelFile, &w, sizeof(int), 1);
-
-	SDL_RWread(levelFile, buffer, sizeof(char), 1);
+	levelFile >> w >> h;
 
 	int** a = new int* [h];
 	for (int i = 0; i < h; ++i) {
@@ -51,15 +45,12 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 
 	for (int i = 0; i < h; ++i) {
 		for (int j = 0; j < w; ++j) {
-			SDL_RWread(levelFile, a[i]+j, sizeof(int), 1);
-			SDL_RWread(levelFile, buffer, sizeof(char), 1);
+			levelFile >> a[i][j];
 		}
 	}
-	SDL_RWread(levelFile, buffer, sizeof(char), 1);
 
 	int smFlag = 0;
-	SDL_RWread(levelFile, &smFlag, sizeof(int), 1);
-	SDL_RWread(levelFile, buffer, sizeof(char), 1);
+	levelFile >> smFlag;
 
 	level->mapH = h;
 	level->mapW = w;
@@ -68,17 +59,33 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	
 	char* mapPath = new char[24], * tilesetPath = new char[26];
 	
-	SDL_RWread(levelFile, buffer, sizeof(char), 1);
-	SDL_RWread(levelFile, mapPath, 23 * sizeof(char), 1);
-	SDL_RWread(levelFile, buffer, sizeof(char), 1);
-	SDL_RWread(levelFile, tilesetPath, 26 * sizeof(char), 1);
+	while (levelFile.peek() == ' ' || levelFile.peek() == '\n') {
+		levelFile.get();
+	}
+
+	levelFile.get(mapPath, 24, '\n');
+	levelFile.get();
+	levelFile.get(tilesetPath, 26, '\n');
 
 	TextureManager::Texture[TextureManager::LevelMap] = TextureManager::loadTexture(mapPath); 
 	TextureManager::Texture[TextureManager::LevelTileSet] = TextureManager::loadTexture(tilesetPath);
 
 	delete[] mapPath;
 	delete[] tilesetPath;
-	delete[] buffer;
-	SDL_RWclose(levelFile);
+	levelFile.close();
 	return true;
+}
+
+void LevelLoader::unloadLevel(Level* level) {
+	if (TextureManager::Texture[TextureManager::LevelMap]) {
+		SDL_DestroyTexture(TextureManager::Texture[TextureManager::LevelMap]);
+		TextureManager::Texture[TextureManager::LevelMap] = NULL;
+	}
+	if (TextureManager::Texture[TextureManager::LevelTileSet]) {
+		SDL_DestroyTexture(TextureManager::Texture[TextureManager::LevelTileSet]);
+		TextureManager::Texture[TextureManager::LevelTileSet] = NULL;
+	}
+	level->~Level();
+	level = NULL;
+	levelLoaded = false;
 }

@@ -12,9 +12,15 @@ private:
 	SDL_Window* gameWindow;
 	bool quitFlag;
 public:
-	MainMenu* MainM;
+	Menu* Menus[2];
+	enum menus {
+		Main,
+		Pause,
+		VictoryScreen,
+		DefeatScreen
+	};
 	LevelLoader levelLoader;
-	Level level;
+	Level* level;
 	Game();
 	~Game();
 	bool getQuitFlag(void);

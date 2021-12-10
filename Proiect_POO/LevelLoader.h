@@ -1,14 +1,16 @@
 #pragma once
 
+#include <fstream>
 #include "TextureManager.h"
 #include "SoundManager.h"
 #include "Level.h"
 
 class LevelLoader {
 private:
-	SDL_RWops* levelFile;
+	std::ifstream levelFile;
 
 public:
+	bool levelLoaded;
 	enum Levels {
 		Default,
 		sp_1,
