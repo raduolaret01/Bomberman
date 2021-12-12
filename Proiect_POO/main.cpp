@@ -29,13 +29,15 @@ int main() {
 				}
 				G.levelLoader.levelLoaded = G.levelLoader.loadLevel(G.level, G.Menus[Game::Main]->getLoadLevelFlag());
 				Menu::clearFlags();
+				G.level->Init();
 
 				while (G.levelLoader.levelLoaded && isRunning) {
 					while (SDL_PollEvent(&e) != 0) {
 						const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 						if (currentKeyStates[SDL_SCANCODE_ESCAPE]) {
 
-							Menu::setPauseMenuFlag(); SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 600, 400);
+							Menu::setPauseMenuFlag(); 
+							SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 600, 400);
 							if (TempTexture == NULL) {
 								printf("Unable to render blank background texture! SDL_ttf Error: %s\n", TTF_GetError());
 							}
@@ -79,12 +81,18 @@ int main() {
 							}
 
 						}
+						if (currentKeyStates[SDL_SCANCODE_SPACE]) {
+							if(G.level)
+								G.level->objTable[2][0]->setAnimState(1);
+						}
 						if (e.type == SDL_QUIT)
 							isRunning = false;
 					}
-					SDL_SetRenderDrawColor(TextureManager::Renderer, 0x00, 0x00, 0x00, 0xFF);
-					SDL_RenderClear(TextureManager::Renderer);
-					G.level->Show();
+					if (G.level) {
+						SDL_SetRenderDrawColor(TextureManager::Renderer, 0x00, 0x00, 0x00, 0xFF);
+						SDL_RenderClear(TextureManager::Renderer);
+						G.level->Show();
+					}
 				}
 			}
 		}

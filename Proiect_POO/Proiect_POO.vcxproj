@@ -147,20 +147,26 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObj.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
+    <ClCompile Include="SolidObj.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObj.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SolidObj.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>

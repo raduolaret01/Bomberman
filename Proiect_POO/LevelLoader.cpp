@@ -35,8 +35,13 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 		printf("Error opening level file!");
 		return false;
 	}
+
+	levelFile >> level->mapTextureOffset.x >> level->mapTextureOffset.y;
+	
+	levelFile >> level->mapTextureW >> level->mapTextureH;
+
 	int w, h;
-	levelFile >> w >> h;
+	levelFile >> h >> w;
 
 	int** a = new int* [h];
 	for (int i = 0; i < h; ++i) {
@@ -69,6 +74,8 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 
 	TextureManager::Texture[TextureManager::LevelMap] = TextureManager::loadTexture(mapPath); 
 	TextureManager::Texture[TextureManager::LevelTileSet] = TextureManager::loadTexture(tilesetPath);
+
+	Obstacle1::loadAnimationStates(&levelFile);
 
 	delete[] mapPath;
 	delete[] tilesetPath;
