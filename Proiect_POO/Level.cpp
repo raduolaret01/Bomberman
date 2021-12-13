@@ -25,6 +25,15 @@ Level::~Level() {
 		delete[] map;
 		map = NULL;
 	}
+	if (objTable) {
+		for (int i = 1; i < 5; ++i) {
+			if (objTable[i]) {
+				delete[] objTable[i];
+			}
+		}
+		delete[] objTable;
+		objTable = NULL;
+	}
 	if (objectCount) {
 		delete[] objectCount;
 		objectCount = NULL;
@@ -56,8 +65,10 @@ void Level::Init() {
 			case 2:
 				objTable[map[i][j]][instanceCount[map[i][j]]++] = new Obstacle1({ j * 16,i * 16 }, 16, 16);
 				break;
+			case 3:
+				objTable[map[i][j]][instanceCount[map[i][j]]++] = new Obstacle2({ j * 16,i * 16 }, 16, 16);
+				break;
 			}
-
 		}
 	}
 	MapTexture.x = 300 - mapTextureW * 3 / 4;
@@ -75,9 +86,22 @@ void Level::Show() {
 
 	for (int i = 2; i < 5; ++i) {
 		for (int j = 0; j < objectCount[i]; ++j) {
-			objTable[i][j]->Show(mapTextureOffset);
+			if (objTable[i][j]->Show(mapTextureOffset) == -1) {
+				deleteObj(i, j);
+			}
 		}
 	}
 
 	SDL_RenderPresent(TextureManager::Renderer);
+}
+
+void Level::deleteObj(int i, int j) {
+	SDL_Rect pos = objTable[i][j]->getHitbox();
+	delete objTable[i][j];
+	for (int k = j; k + 1 < objectCount[i]; ++k) {
+		objTable[i][k] = objTable[i][k + 1];
+	}
+	--objectCount[i];
+	++objectCount[0];
+	map[pos.y/16][pos.x/16] = 0;
 }

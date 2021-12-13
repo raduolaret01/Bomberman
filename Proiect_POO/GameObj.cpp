@@ -26,6 +26,7 @@ GameObj::GameObj() {
 	hitbox = { 0,0,0,0 };
 	currentAnimState = NULL;
 	currentAnimFrame = 0;
+	currentFrameTime = 0;
 }
 
 GameObj::GameObj(const SDL_Point coords, const int w, const int h) {
@@ -35,10 +36,15 @@ GameObj::GameObj(const SDL_Point coords, const int w, const int h) {
 	hitbox.h = h;
 	currentAnimState = NULL;
 	currentAnimFrame = 0;
+	currentFrameTime = 0;
 }
 
 GameObj::~GameObj() {
 
+}
+
+SDL_Rect GameObj::getHitbox() {
+	return hitbox;
 }
 
 bool GameObj::loadAnimationStates(std::ifstream* input) {
@@ -61,3 +67,4 @@ void GameObj::unloadAnimationStates() {
 		animationStates = NULL;
 	}
 }
+

@@ -24,13 +24,14 @@ private:
 protected:
 	AnimationState* currentAnimState;
 	SDL_Rect hitbox;
-	int currentAnimFrame;
+	int currentAnimFrame, currentFrameTime;
 
 public:
 	GameObj();
 	GameObj(const SDL_Point,const int, const int);
 	~GameObj();
 
+	SDL_Rect getHitbox(void);
 
 	virtual int getAnimState(void) = 0;
 	virtual void setAnimState(int) = 0;

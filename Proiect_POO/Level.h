@@ -32,5 +32,7 @@ public:
 	
 	void Init(void);
 	void Show(void);
+
+	void deleteObj(int, int);
 };
 

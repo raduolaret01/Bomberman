@@ -14,7 +14,7 @@ Button::Button(SDL_Rect dim, void(*function)(void), const char* label) {
 	this->dim = dim;
 	functionality = function;
 
-	Texture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, dim.w, dim.h);
+	Texture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, dim.w, dim.h);
 	if (Texture == NULL) {
 		printf("Unable to render blank button texture! SDL_ttf Error: %s\n", TTF_GetError());
 	}

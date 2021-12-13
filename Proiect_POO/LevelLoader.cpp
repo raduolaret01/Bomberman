@@ -76,6 +76,7 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	TextureManager::Texture[TextureManager::LevelTileSet] = TextureManager::loadTexture(tilesetPath);
 
 	Obstacle1::loadAnimationStates(&levelFile);
+	Obstacle2::loadAnimationStates(&levelFile);
 
 	delete[] mapPath;
 	delete[] tilesetPath;

@@ -93,6 +93,7 @@ int main() {
 						SDL_RenderClear(TextureManager::Renderer);
 						G.level->Show();
 					}
+					Timer::setDTime();
 				}
 			}
 		}
