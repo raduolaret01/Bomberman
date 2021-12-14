@@ -81,6 +81,19 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	delete[] mapPath;
 	delete[] tilesetPath;
 	levelFile.close();
+
+	std::ifstream playerFile("Resources/player1.txt"); 
+	if (!playerFile.is_open()) {
+		printf("Error opening player file!");
+		return false;
+	}
+
+	TextureManager::Texture[TextureManager::Player1] = TextureManager::loadTexture("Resources/p1sprites.png");
+	
+	Player::loadAnimationStates(&playerFile);
+
+	playerFile.close();
+
 	return true;
 }
 
@@ -92,6 +105,10 @@ void LevelLoader::unloadLevel(Level* level) {
 	if (TextureManager::Texture[TextureManager::LevelTileSet]) {
 		SDL_DestroyTexture(TextureManager::Texture[TextureManager::LevelTileSet]);
 		TextureManager::Texture[TextureManager::LevelTileSet] = NULL;
+	}
+	if (TextureManager::Texture[TextureManager::Player1]) {
+		SDL_DestroyTexture(TextureManager::Texture[TextureManager::Player1]);
+		TextureManager::Texture[TextureManager::Player1] = NULL;
 	}
 	level->~Level();
 	level = NULL;

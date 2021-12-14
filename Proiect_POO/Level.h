@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 #include "Obstacle.h"
+#include "Player.h"
 
 class Level{
 public:
@@ -26,6 +27,7 @@ public:
 		ConveyorBelts,
 		Ice
 	};
+	Player* Player1;
 
 	Level();
 	~Level();

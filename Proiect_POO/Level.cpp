@@ -71,6 +71,9 @@ void Level::Init() {
 			}
 		}
 	}
+
+	Player1 = new Player({ 0,0 }, 14, 14);
+
 	MapTexture.x = 300 - mapTextureW * 3 / 4;
 	MapTexture.y = 200 - mapTextureH * 3 / 4;
 	MapTexture.w = mapTextureW * 3 / 2;
@@ -91,6 +94,7 @@ void Level::Show() {
 			}
 		}
 	}
+	Player1->Show(mapTextureOffset);
 
 	SDL_RenderPresent(TextureManager::Renderer);
 }

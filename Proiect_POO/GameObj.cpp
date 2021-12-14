@@ -54,7 +54,7 @@ bool GameObj::loadAnimationStates(std::ifstream* input) {
 		*input >> animationStates[i].textureArea.x >> animationStates[i].textureArea.y >> animationStates[i].textureArea.w >> animationStates[i].textureArea.h;
 		*input >> animationStates[i].numberOfFrames >> animationStates[i].frameOffset;
 		animationStates[i].secondsPerFrame = new int[animationStates[i].numberOfFrames];
-		for (int j = 0; j < animationStates[i].numberOfFrames; ++i) {
+		for (int j = 0; j < animationStates[i].numberOfFrames; ++j) {
 			*input >> animationStates[i].secondsPerFrame[j];
 		}
 	}
