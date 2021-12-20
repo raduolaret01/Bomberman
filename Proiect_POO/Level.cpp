@@ -72,7 +72,7 @@ void Level::Init() {
 		}
 	}
 
-	Player1 = new Player({ 0,0 }, 14, 14);
+	Player1 = new Player({ 16,16 }, 14, 14);
 
 	MapTexture.x = 300 - mapTextureW * 3 / 4;
 	MapTexture.y = 200 - mapTextureH * 3 / 4;

@@ -1,6 +1,5 @@
 #include "Game.h"
 
-
 Game::Game() {
 	gameWindow = NULL;
 	quitFlag = false;
@@ -41,7 +40,7 @@ void Game::Init(void) {
 		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
 		return;
 	}
-	gameWindow = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_SHOWN);
+	gameWindow = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN);
 	if (gameWindow == NULL) {
 		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		quitFlag = 1;
