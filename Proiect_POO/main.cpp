@@ -37,7 +37,7 @@ int main() {
 					const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 					if (currentKeyStates[SDL_SCANCODE_ESCAPE] && pauseMenuTimer >= 250) {
 						Menu::setPauseMenuFlag();
-						SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 600, 400);
+						SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 640, 480);
 						if (TempTexture == NULL) {
 							printf("Unable to render blank background texture! SDL_ttf Error: %s\n", TTF_GetError());
 						}
@@ -88,19 +88,19 @@ int main() {
 					//		G.level->objTable[2][0]->setAnimState(1);
 					//}
 					else if (currentKeyStates[SDL_SCANCODE_W]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->Player1->setDirection(Player::Up), G.level->Player1->setSpeed(2));
+						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Up), G.level->Player1->setSpeed(2));
 					}
 					else if (currentKeyStates[SDL_SCANCODE_D]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->Player1->setDirection(Player::Right), G.level->Player1->setSpeed(2));
+						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Right), G.level->Player1->setSpeed(2));
 					}
 					else if (currentKeyStates[SDL_SCANCODE_S]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->Player1->setDirection(Player::Down), G.level->Player1->setSpeed(2));
+						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Down), G.level->Player1->setSpeed(2));
 					}
 					else if (currentKeyStates[SDL_SCANCODE_A]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->Player1->setDirection(Player::Left), G.level->Player1->setSpeed(2));
+						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Left), G.level->Player1->setSpeed(2));
 					}
 					else {
-						G.level->Player1->Update(Timer::getDTime(), false, G.level->Player1->setSpeed(0));
+						G.level->Player1->Update(Timer::getDTime(), -1.0f, false, G.level->Player1->setSpeed(0));
 					}
 					if (e.type == SDL_QUIT)
 						isRunning = false;

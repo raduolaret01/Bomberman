@@ -1,6 +1,12 @@
 #include "Level.h"
 #include "SolidObj.h"
 
+float modulo(float x, int m) {
+	int int_r = (int)x % m;
+	float fl_r = x - (int)x;
+	return int_r + fl_r;
+}
+
 Level::Level() {
 	mapTextureOffset = { 0,0 };
 	mapTextureH = mapTextureW = 0;
@@ -74,12 +80,12 @@ void Level::Init() {
 
 	Player1 = new Player({ 16,16 }, 14, 14);
 
-	MapTexture.x = 300 - mapTextureW * 3 / 4;
-	MapTexture.y = 200 - mapTextureH * 3 / 4;
-	MapTexture.w = mapTextureW * 3 / 2;
-	MapTexture.h = mapTextureH * 3 / 2;
+	MapTexture.x = 320 - mapTextureW;
+	MapTexture.y = 240 - mapTextureH;
+	MapTexture.w = mapTextureW * 2;
+	MapTexture.h = mapTextureH * 2;
 
-	mapTextureOffset = { mapTextureOffset.x * 3 / 2 + MapTexture.x,mapTextureOffset.y * 3 / 2 + MapTexture.y };
+	mapTextureOffset = { mapTextureOffset.x * 2 + MapTexture.x,mapTextureOffset.y * 2 + MapTexture.y };
 
 }
 
@@ -100,12 +106,94 @@ void Level::Show() {
 }
 
 void Level::deleteObj(int i, int j) {
-	SDL_Rect pos = objTable[i][j]->getHitbox();
-	delete objTable[i][j];
+	int posX = (int)objTable[i][j]->getHitbox().x, posY = (int)objTable[i][j]->getHitbox().y;
 	for (int k = j; k + 1 < objectCount[i]; ++k) {
 		objTable[i][k] = objTable[i][k + 1];
 	}
 	--objectCount[i];
 	++objectCount[0];
-	map[pos.y/16][pos.x/16] = 0;
+	map[posY / 16][posX / 16] = 0;
+}
+
+float Level::checkCollision(Player* p) {
+	int mapX = (int)p->getHitbox().x / 16, mapY = (int)p->getHitbox().y / 16;
+	switch (p->getDirection()) {
+	case Player::Up:
+		if (modulo(p->getHitbox().x, 16) > 2.0f) {
+			if (map[mapY - 1][mapX] == 0 && map[mapY - 1][mapX + 1] == 0) {
+				return -1.0f;
+			}
+			else {
+				return modulo(p->getHitbox().y, 16);
+			}
+		}
+		else {
+			if (map[mapY - 1][mapX] == 0) {
+				return -1.0f;
+			}
+			else {
+				return modulo(p->getHitbox().y, 16);
+			}
+		}
+		break;
+	case Player::Down:
+		if (modulo(p->getHitbox().x, 16) > 2.0f) {
+			if (map[mapY + 1][mapX] == 0 && map[mapY + 1][mapX + 1] == 0) {
+				return -1.0f;
+			}
+			else {
+				return 2.0f - modulo(p->getHitbox().y, 16);
+			}
+		}
+		else {
+			if (map[mapY + 1][mapX] == 0) {
+				printf("1\n");
+				return -1.0f;
+			}
+			else {
+				return 2.0f - modulo(p->getHitbox().y, 16);
+			}
+		}
+		break;
+	case Player::Left:
+		if (modulo(p->getHitbox().y, 16) > 2.0f) {
+			if (map[mapY][mapX - 1] == 0 && map[mapY + 1][mapX - 1] == 0) {
+				return -1.0f;
+			}
+			else {
+				return modulo(p->getHitbox().x, 16);
+			}
+		}
+		else {
+			if (map[mapY][mapX - 1] == 0) {
+				return -1.0f;
+			}
+			else {
+				return modulo(p->getHitbox().x, 16);
+			}
+		}
+		break;
+	case Player::Right:
+		if (modulo(p->getHitbox().y, 16) > 2.0f) {
+			if (map[mapY][mapX + 1] == 0 && map[mapY + 1][mapX + 1] == 0) {
+				return -1.0f;
+			}
+			else {
+				return 2.0f - modulo(p->getHitbox().x, 16);
+			}
+		}
+		else {
+			if (map[mapY][mapX + 1] == 0) {
+				return -1.0f;
+			}
+			else {
+				return 2.0f - modulo(p->getHitbox().x, 16);
+			}
+		}
+		break;
+	default:
+		return -1.0f;
+		break;
+	}
+	return -1.0f;
 }

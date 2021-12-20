@@ -1,6 +1,9 @@
 #include "GameObj.h"
 
 AnimationState::AnimationState() {
+	frameOffset = 0;
+	numberOfFrames = 0;
+	textureArea = { 0,0,0,0 };
 	secondsPerFrame = NULL;
 }
 
@@ -43,7 +46,7 @@ GameObj::~GameObj() {
 
 }
 
-SDL_Rect GameObj::getHitbox() {
+Hitbox GameObj::getHitbox() {
 	return hitbox;
 }
 

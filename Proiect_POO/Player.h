@@ -34,7 +34,9 @@ public:
 
 	bool setSpeed(int);
 	bool setDirection(int);
-	void Update(int, bool, bool);
+	int getDirection(void);
+
+	void Update(int, float, bool, bool);
 
 	//static bool loadAnimationStates(void);
 	static bool loadAnimationStates(std::ifstream* input);

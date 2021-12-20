@@ -51,12 +51,14 @@ int Player::Show(SDL_Point Offset) {
 		flip = SDL_FLIP_HORIZONTAL;
 	}
 	SDL_Rect TempSrc = { currentAnimState->textureArea.x + currentAnimFrame * currentAnimState->frameOffset,currentAnimState->textureArea.y,currentAnimState->textureArea.w,currentAnimState->textureArea.h };
-	SDL_Rect TempDest = { (hitbox.x - 1) * 3 / 2 + Offset.x,(hitbox.y - 10) * 3 / 2 + Offset.y,currentAnimState->textureArea.w * 3 / 2,currentAnimState->textureArea.h * 3 / 2 };
+	SDL_Rect TempDest = { (int)((hitbox.x - 1) * 2 + Offset.x),(int)((hitbox.y - 10) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
 	SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &TempDest,0,NULL,flip);
+
+	//SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &hitbox, 0, NULL, flip);
 	return 0;
 }
 
-void Player::Update(int dTime, bool dirChanged, bool spdChanged) {
+void Player::Update(int dTime, float collisionDist, bool dirChanged, bool spdChanged) {
 	if (speed == 2) {
 		if (dirChanged||spdChanged) {
 			switch (direction) {
@@ -72,19 +74,37 @@ void Player::Update(int dTime, bool dirChanged, bool spdChanged) {
 				break;
 			}
 		}
-		switch (direction) {
-		case Down:
-			hitbox.y += speed * dTime/30;
-			break;
-		case Right:
-			hitbox.x += speed * dTime/30;
-			break;
-		case Left:
-			hitbox.x -= speed * dTime/30;
-			break;
-		case Up:
-			hitbox.y -= speed * dTime/30;
-			break;
+		if(collisionDist!=-1.0f){
+			switch (direction) {
+			case Down:
+				hitbox.y += std::min(speed * dTime / 40.0f, collisionDist);
+				break;
+			case Right:
+				hitbox.x += std::min(speed * dTime / 40.0f, collisionDist);
+				break;
+			case Left:
+				hitbox.x -= std::min(speed * dTime / 40.0f, collisionDist);
+				break;
+			case Up:
+				hitbox.y -= std::min(speed * dTime / 40.0f, collisionDist);
+				break;
+			}
+		}
+		else {
+			switch (direction) {
+			case Down:
+				hitbox.y += speed * dTime / 40.0f;
+				break;
+			case Right:
+				hitbox.x += speed * dTime / 40.0f;
+				break;
+			case Left:
+				hitbox.x -= speed * dTime / 40.0f;
+				break;
+			case Up:
+				hitbox.y -= speed * dTime / 40.0f;
+				break;
+			}
 		}
 	}
 	else {
@@ -101,6 +121,9 @@ void Player::Update(int dTime, bool dirChanged, bool spdChanged) {
 			break;
 		}
 	}
+	//printf("%d\n", dTime);
+	//int mapX = (int)getHitbox().x / 16, mapY = (int)getHitbox().y / 16;
+	//printf("%d,%d\n", mapY, mapX);
 	
 }
 
@@ -119,6 +142,10 @@ bool Player::setSpeed(int sp) {
 		return true;
 	}
 	return false;
+}
+
+int Player::getDirection() {
+	return direction;
 }
 
 //bool Player::loadAnimationStates() {

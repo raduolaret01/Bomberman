@@ -108,12 +108,12 @@ MainMenu::~MainMenu() {
 
 void MainMenu::Init() {
 	ButtonArray = new Button * [6];
-	ButtonArray[Quit] = new Button({ 200,310,200,60 }, &Menu::setQuitFlag, "Quit");
-	ButtonArray[Load_1p_1] = new Button({ 120,110,120,60 }, &Menu::loadLevel1, "Level 1");
-	ButtonArray[Load_1p_2] = new Button({ 240,110,120,60 }, &Menu::loadLevel2, "Level 2");
-	ButtonArray[Load_1p_3] = new Button({ 360,110,120,60 }, &Menu::loadLevel3, "Level 3");
-	ButtonArray[Load_2p_coop] = new Button({ 60,170,240,60 }, &Menu::loadLevel4, "2 Player CO-OP");
-	ButtonArray[Load_2p_vs] = new Button({ 300,170,240,60 }, &Menu::loadLevel5, "2 Player Versus");
+	ButtonArray[Quit] = new Button({ 220,320,200,60 }, &Menu::setQuitFlag, "Quit");
+	ButtonArray[Load_1p_1] = new Button({ 140,120,120,60 }, &Menu::loadLevel1, "Level 1");
+	ButtonArray[Load_1p_2] = new Button({ 260,120,120,60 }, &Menu::loadLevel2, "Level 2");
+	ButtonArray[Load_1p_3] = new Button({ 380,120,120,60 }, &Menu::loadLevel3, "Level 3");
+	ButtonArray[Load_2p_coop] = new Button({ 80,180,240,60 }, &Menu::loadLevel4, "2 Player CO-OP");
+	ButtonArray[Load_2p_vs] = new Button({ 320,180,240,60 }, &Menu::loadLevel5, "2 Player Versus");
 }
 
 void MainMenu::Show() {
@@ -140,7 +140,7 @@ void MainMenu::Show() {
 
 			//Set text to render centered on x axis
 			SDL_Rect temp;
-			temp.x = (600 - tWidth) / 2;
+			temp.x = (640 - tWidth) / 2;
 			temp.y = 30;
 			temp.w = tWidth;
 			temp.h = tHeight;
@@ -192,27 +192,12 @@ PauseMenu::~PauseMenu() {
 	}
 }
 
+//Create button array for Pause Menu
 void PauseMenu::Init() {
-	SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 600, 400);
-	if (TempTexture == NULL) {
-		printf("Unable to render blank background texture! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-	else {
-		SDL_SetRenderTarget(TextureManager::Renderer, TempTexture);
-		SDL_RenderPresent(TextureManager::Renderer);
-		SDL_SetRenderTarget(TextureManager::Renderer, NULL);
-	}
-	if (Background) {
-		SDL_DestroyTexture(Background);
-	}
-	Background = TempTexture;
-
-	if (ButtonArray == NULL) {
-		ButtonArray = new Button * [3];
-		ButtonArray[Quit] = new Button({ 200,310,200,70 }, &Menu::setQuitFlag, "Quit Game");
-		ButtonArray[QuitToMenu] = new Button({ 200,210,200,70 }, &Menu::setReloadFlag, "Main Menu");
-		ButtonArray[Resume] = new Button({ 200,110,200,70 }, &Menu::clearPauseMenuFlag, "Resume");
-	}
+	ButtonArray = new Button * [3];
+	ButtonArray[Quit] = new Button({ 220,310,200,70 }, &Menu::setQuitFlag, "Quit Game");
+	ButtonArray[QuitToMenu] = new Button({ 220,210,200,70 }, &Menu::setReloadFlag, "Main Menu");
+	ButtonArray[Resume] = new Button({ 220,110,200,70 }, &Menu::clearPauseMenuFlag, "Resume");
 }
 
 void PauseMenu::Show() {
@@ -241,7 +226,7 @@ void PauseMenu::Show() {
 
 			//Set text to render centered on x axis
 			SDL_Rect temp;
-			temp.x = (600 - tWidth * 2) / 2;
+			temp.x = (640 - tWidth * 2) / 2;
 			temp.y = 30;
 			temp.w = tWidth * 2;
 			temp.h = tHeight * 2;

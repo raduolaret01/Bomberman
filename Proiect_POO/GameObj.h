@@ -16,6 +16,11 @@ struct AnimationState {
 	//AnimationState& operator=(const AnimationState&);
 };
 
+struct Hitbox {
+	float x, y;
+	int w, h;
+};
+
 class GameObj{
 private:
 	static int numberOfAnimStates;
@@ -23,7 +28,7 @@ private:
 
 protected:
 	AnimationState* currentAnimState;
-	SDL_Rect hitbox;
+	Hitbox hitbox;
 	int currentAnimFrame, currentFrameTime;
 
 public:
@@ -31,7 +36,7 @@ public:
 	GameObj(const SDL_Point,const int, const int);
 	~GameObj();
 
-	SDL_Rect getHitbox(void);
+	Hitbox getHitbox(void);
 
 	virtual int getAnimState(void) = 0;
 	virtual void setAnimState(int) = 0;

@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 #include "Obstacle.h"
-#include "Player.h"z
+#include "Player.h"
 
 class Level{
 public:
@@ -35,6 +35,8 @@ public:
 	void Init(void);
 	void Show(void);
 
+
+	float checkCollision(Player*);
 	void deleteObj(int, int);
 };
 

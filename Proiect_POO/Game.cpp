@@ -1,5 +1,10 @@
 #include "Game.h"
 
+constexpr auto SCREEN_HEIGHT = 480;
+
+constexpr auto SCREEN_WIDTH = 640;
+
+
 Game::Game() {
 	gameWindow = NULL;
 	quitFlag = false;
@@ -40,7 +45,7 @@ void Game::Init(void) {
 		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
 		return;
 	}
-	gameWindow = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN);
+	gameWindow = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (gameWindow == NULL) {
 		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		quitFlag = 1;
@@ -49,7 +54,7 @@ void Game::Init(void) {
 
 	SDL_Renderer* Renderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (Renderer == NULL) {
-		printf("Renderere could not be created! SDL_Error: %s\n", SDL_GetError());
+		printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
 		quitFlag = 1;
 		return;
 	}
