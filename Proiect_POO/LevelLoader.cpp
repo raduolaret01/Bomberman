@@ -82,9 +82,10 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	delete[] tilesetPath;
 	levelFile.close();
 
+	//load player sprite sheet
 	std::ifstream playerFile("Resources/player1.txt"); 
 	if (!playerFile.is_open()) {
-		printf("Error opening player file!");
+		printf("Error opening player file!\n");
 		return false;
 	}
 
@@ -93,6 +94,16 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	Player::loadAnimationStates(&playerFile);
 
 	playerFile.close();
+
+	std::ifstream bombFile("Resources/bomb.txt");
+	if (!bombFile.is_open()) {
+		printf("Error opening bomb file!\n");
+		return false;
+	}
+
+	TextureManager::Texture[TextureManager::BombTileSet] = TextureManager::loadTexture("Resources/bombtileset.png");
+
+	Bomb::loadAnimationStates(&bombFile);
 
 	return true;
 }
@@ -110,6 +121,12 @@ void LevelLoader::unloadLevel(Level* level) {
 		SDL_DestroyTexture(TextureManager::Texture[TextureManager::Player1]);
 		TextureManager::Texture[TextureManager::Player1] = NULL;
 	}
+	if (TextureManager::Texture[TextureManager::BombTileSet]) {
+		SDL_DestroyTexture(TextureManager::Texture[TextureManager::BombTileSet]);
+		TextureManager::Texture[TextureManager::BombTileSet] = NULL;
+	}
+
+
 	level->~Level();
 	level = NULL;
 	levelLoaded = false;

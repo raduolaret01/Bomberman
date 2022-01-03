@@ -12,7 +12,7 @@ SolidObj::SolidObj(const SDL_Point coord, const int w, const int h) : GameObj(co
 }
 
 SolidObj::~SolidObj() {
-
+	unloadAnimationStates();
 }
 
 int SolidObj::getAnimState() {

@@ -11,7 +11,7 @@ Obstacle::Obstacle(const SDL_Point coords, const int w, const int h) : SolidObj(
 }
 
 Obstacle::~Obstacle() {
-
+	unloadAnimationStates();
 }
 
 int Obstacle::getAnimState() {
@@ -41,7 +41,7 @@ Obstacle1::Obstacle1(const SDL_Point coords, const int w, const int h) : Obstacl
 }
 
 Obstacle1::~Obstacle1() {
-
+	unloadAnimationStates();
 }
 
 int Obstacle1::getAnimState() {
@@ -111,7 +111,7 @@ Obstacle2::Obstacle2(const SDL_Point coords, const int w, const int h) : Obstacl
 }
 
 Obstacle2::~Obstacle2() {
-
+	unloadAnimationStates();
 }
 
 int Obstacle2::getAnimState() {

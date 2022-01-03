@@ -43,7 +43,7 @@ GameObj::GameObj(const SDL_Point coords, const int w, const int h) {
 }
 
 GameObj::~GameObj() {
-
+	unloadAnimationStates();
 }
 
 Hitbox GameObj::getHitbox() {

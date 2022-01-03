@@ -102,6 +102,11 @@ int main() {
 					else {
 						G.level->Player1->Update(Timer::getDTime(), -1.0f, false, G.level->Player1->setSpeed(0));
 					}
+
+					if (G.level && currentKeyStates[SDL_SCANCODE_SPACE]) {
+						G.level->placeBomb(G.level->Player1);
+					}
+
 					if (e.type == SDL_QUIT)
 						isRunning = false;
 

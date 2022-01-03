@@ -8,6 +8,8 @@ protected:
 	int direction;
 	int speed;
 public:
+	int range, placedBombs, maxPlacedBombs;
+
 	enum DirectionEnum {
 		Down,
 		Right,

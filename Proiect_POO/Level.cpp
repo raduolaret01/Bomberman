@@ -78,7 +78,10 @@ void Level::Init() {
 		}
 	}
 
-	Player1 = new Player({ 16,16 }, 14, 14);
+	Player1 = new Player({ 18,18 }, 12, 12);
+	bombs[0] = NULL;
+	bombs[1] = NULL;
+
 
 	MapTexture.x = 320 - mapTextureW;
 	MapTexture.y = 240 - mapTextureH;
@@ -101,25 +104,20 @@ void Level::Show() {
 		}
 	}
 	Player1->Show(mapTextureOffset);
+	for (int i = 0; i < 2; ++i) {
+		if (bombs[i]) {
+			bombs[i]->Show(mapTextureOffset);
+		}
+	}
 
 	SDL_RenderPresent(TextureManager::Renderer);
-}
-
-void Level::deleteObj(int i, int j) {
-	int posX = (int)objTable[i][j]->getHitbox().x, posY = (int)objTable[i][j]->getHitbox().y;
-	for (int k = j; k + 1 < objectCount[i]; ++k) {
-		objTable[i][k] = objTable[i][k + 1];
-	}
-	--objectCount[i];
-	++objectCount[0];
-	map[posY / 16][posX / 16] = 0;
 }
 
 float Level::checkCollision(Player* p) {
 	int mapX = (int)p->getHitbox().x / 16, mapY = (int)p->getHitbox().y / 16;
 	switch (p->getDirection()) {
 	case Player::Up:
-		if (modulo(p->getHitbox().x, 16) > 2.0f) {
+		if (modulo(p->getHitbox().x, 16) > 4.0f) {
 			if (map[mapY - 1][mapX] == 0 && map[mapY - 1][mapX + 1] == 0) {
 				return -1.0f;
 			}
@@ -137,26 +135,25 @@ float Level::checkCollision(Player* p) {
 		}
 		break;
 	case Player::Down:
-		if (modulo(p->getHitbox().x, 16) > 2.0f) {
+		if (modulo(p->getHitbox().x, 16) > 4.0f) {
 			if (map[mapY + 1][mapX] == 0 && map[mapY + 1][mapX + 1] == 0) {
 				return -1.0f;
 			}
 			else {
-				return 2.0f - modulo(p->getHitbox().y, 16);
+				return 4.0f - modulo(p->getHitbox().y, 16);
 			}
 		}
 		else {
 			if (map[mapY + 1][mapX] == 0) {
-				printf("1\n");
 				return -1.0f;
 			}
 			else {
-				return 2.0f - modulo(p->getHitbox().y, 16);
+				return 4.0f - modulo(p->getHitbox().y, 16);
 			}
 		}
 		break;
 	case Player::Left:
-		if (modulo(p->getHitbox().y, 16) > 2.0f) {
+		if (modulo(p->getHitbox().y, 16) > 4.0f) {
 			if (map[mapY][mapX - 1] == 0 && map[mapY + 1][mapX - 1] == 0) {
 				return -1.0f;
 			}
@@ -174,12 +171,12 @@ float Level::checkCollision(Player* p) {
 		}
 		break;
 	case Player::Right:
-		if (modulo(p->getHitbox().y, 16) > 2.0f) {
+		if (modulo(p->getHitbox().y, 16) > 4.0f) {
 			if (map[mapY][mapX + 1] == 0 && map[mapY + 1][mapX + 1] == 0) {
 				return -1.0f;
 			}
 			else {
-				return 2.0f - modulo(p->getHitbox().x, 16);
+				return 4.0f - modulo(p->getHitbox().x, 16);
 			}
 		}
 		else {
@@ -187,7 +184,7 @@ float Level::checkCollision(Player* p) {
 				return -1.0f;
 			}
 			else {
-				return 2.0f - modulo(p->getHitbox().x, 16);
+				return 4.0f - modulo(p->getHitbox().x, 16);
 			}
 		}
 		break;
@@ -196,4 +193,40 @@ float Level::checkCollision(Player* p) {
 		break;
 	}
 	return -1.0f;
+}
+
+void Level::deleteObj(int i, int j) {
+	int posX = (int)objTable[i][j]->getHitbox().x, posY = (int)objTable[i][j]->getHitbox().y;
+	for (int k = j; k + 1 < objectCount[i]; ++k) {
+		objTable[i][k] = objTable[i][k + 1];
+	}
+	--objectCount[i];
+	++objectCount[0];
+	map[posY / 16][posX / 16] = 0;
+}
+
+void Level::placeBomb(Player* p) {
+	if (p->placedBombs >= p->maxPlacedBombs) {
+		return;
+	}
+	printf("bomb\n");
+	int mapX = (int)p->getHitbox().x / 16, mapY = (int)p->getHitbox().y / 16;
+	if (modulo(p->getHitbox().x, 16) >= 8.0f) {
+		++mapX;
+	}
+	if (modulo(p->getHitbox().y, 16) >= 8.0f) {
+		++mapY;
+	}
+	if (bombs[0] != NULL && bombs[1] != NULL) {
+		return;
+	}
+	if (bombs[0] == NULL) {
+		++p->placedBombs;
+		bombs[0] = new Bomb({ mapX * 16,mapY * 16 }, 16, 16, p);
+	}
+	else {
+		++p->placedBombs;
+		bombs[0] = new Bomb({ mapX * 16,mapY * 16 }, 16, 16, p);
+	}
+
 }

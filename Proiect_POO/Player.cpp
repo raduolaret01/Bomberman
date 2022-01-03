@@ -5,19 +5,25 @@ int Player::numberOfAnimStates = 6;
 AnimationState* Player::animationStates = NULL;
 
 Player::Player() : SolidObj() {
+	range = 1;
 	direction = 0;
 	currentAnimState = animationStates;
 	speed = 0;
+	placedBombs = 0;
+	maxPlacedBombs = 1;
 }
 
 Player::Player(const SDL_Point coord, const int w, const int h) : SolidObj(coord, w, h) {
+	range = 1;
 	direction = 0;
 	currentAnimState = animationStates;
 	speed = 0;
+	placedBombs = 0;
+	maxPlacedBombs = 1;
 }
 
 Player::~Player() {
-
+	unloadAnimationStates();
 }
 
 int Player::getAnimState() {
@@ -51,7 +57,7 @@ int Player::Show(SDL_Point Offset) {
 		flip = SDL_FLIP_HORIZONTAL;
 	}
 	SDL_Rect TempSrc = { currentAnimState->textureArea.x + currentAnimFrame * currentAnimState->frameOffset,currentAnimState->textureArea.y,currentAnimState->textureArea.w,currentAnimState->textureArea.h };
-	SDL_Rect TempDest = { (int)((hitbox.x - 1) * 2 + Offset.x),(int)((hitbox.y - 10) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
+	SDL_Rect TempDest = { (int)((hitbox.x - 2) * 2 + Offset.x),(int)((hitbox.y - 12) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
 	SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &TempDest,0,NULL,flip);
 
 	//SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &hitbox, 0, NULL, flip);

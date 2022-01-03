@@ -4,6 +4,7 @@
 #include "SoundManager.h"
 #include "Obstacle.h"
 #include "Player.h"
+#include "Bomb.h"
 
 class Level{
 public:
@@ -14,6 +15,7 @@ public:
 	int** map;
 	int* objectCount;
 	GameObj*** objTable;
+	Bomb* bombs[2];
 	enum Objects {
 		BlankTile,
 		SolidObject,
@@ -37,6 +39,9 @@ public:
 
 
 	float checkCollision(Player*);
+	void placeBomb(Player*);
+	void deleteBomb();
+
 	void deleteObj(int, int);
 };
 
