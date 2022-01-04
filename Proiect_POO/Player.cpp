@@ -58,7 +58,7 @@ int Player::Show(SDL_Point Offset) {
 	}
 	SDL_Rect TempSrc = { currentAnimState->textureArea.x + currentAnimFrame * currentAnimState->frameOffset,currentAnimState->textureArea.y,currentAnimState->textureArea.w,currentAnimState->textureArea.h };
 	SDL_Rect TempDest = { (int)((hitbox.x - 2) * 2 + Offset.x),(int)((hitbox.y - 12) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
-	SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &TempDest,0,NULL,flip);
+	SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &TempDest, 0, NULL, flip);
 
 	//SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &hitbox, 0, NULL, flip);
 	return 0;

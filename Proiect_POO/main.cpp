@@ -87,33 +87,35 @@ int main() {
 					//	if(G.level)
 					//		G.level->objTable[2][0]->setAnimState(1);
 					//}
-					else if (currentKeyStates[SDL_SCANCODE_W]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Up), G.level->Player1->setSpeed(2));
-					}
-					else if (currentKeyStates[SDL_SCANCODE_D]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Right), G.level->Player1->setSpeed(2));
-					}
-					else if (currentKeyStates[SDL_SCANCODE_S]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Down), G.level->Player1->setSpeed(2));
-					}
-					else if (currentKeyStates[SDL_SCANCODE_A]) {
-						G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Left), G.level->Player1->setSpeed(2));
-					}
-					else {
-						G.level->Player1->Update(Timer::getDTime(), -1.0f, false, G.level->Player1->setSpeed(0));
-					}
+					else if (G.level != NULL) {
+						if (currentKeyStates[SDL_SCANCODE_W]) {
+							G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Up), G.level->Player1->setSpeed(2));
+						}
+						if (currentKeyStates[SDL_SCANCODE_D]) {
+							G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Right), G.level->Player1->setSpeed(2));
+						}
+						if (currentKeyStates[SDL_SCANCODE_S]) {
+							G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Down), G.level->Player1->setSpeed(2));
+						}
+						if (currentKeyStates[SDL_SCANCODE_A]) {
+							G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Left), G.level->Player1->setSpeed(2));
+						}
+						if (!(currentKeyStates[SDL_SCANCODE_W] || currentKeyStates[SDL_SCANCODE_A] || currentKeyStates[SDL_SCANCODE_S] || currentKeyStates[SDL_SCANCODE_D])) {
+							G.level->Player1->Update(Timer::getDTime(), -1.0f, false, G.level->Player1->setSpeed(0));
+						}
 
-					if (G.level && currentKeyStates[SDL_SCANCODE_SPACE]) {
-						G.level->placeBomb(G.level->Player1);
-					}
+						if (currentKeyStates[SDL_SCANCODE_SPACE]) {
+							G.level->placeBomb(G.level->Player1);
+						}
 
-					if (e.type == SDL_QUIT)
-						isRunning = false;
+						if (e.type == SDL_QUIT) {
+							isRunning = false;
+						}
 
-					if (G.level) {
 						SDL_SetRenderDrawColor(TextureManager::Renderer, 0x00, 0x00, 0x00, 0xFF);
 						SDL_RenderClear(TextureManager::Renderer);
 						G.level->Show();
+						
 					}
 					pauseMenuTimer += Timer::getDTime();
 					Timer::setDTime();

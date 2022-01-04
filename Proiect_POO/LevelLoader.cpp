@@ -104,6 +104,7 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	TextureManager::Texture[TextureManager::BombTileSet] = TextureManager::loadTexture("Resources/bombtileset.png");
 
 	Bomb::loadAnimationStates(&bombFile);
+	Blast::loadAnimationStates(&bombFile);
 
 	return true;
 }

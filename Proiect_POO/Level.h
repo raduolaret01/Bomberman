@@ -15,12 +15,13 @@ public:
 	int** map;
 	int* objectCount;
 	GameObj*** objTable;
-	Bomb* bombs[2];
+	Bomb** bombs;
 	enum Objects {
 		BlankTile,
 		SolidObject,
 		ObstacleStatic,
 		ObstacleAnim,
+		BombT,
 		Conveyor
 	};
 	int specialMechanics;
@@ -40,7 +41,8 @@ public:
 
 	float checkCollision(Player*);
 	void placeBomb(Player*);
-	void deleteBomb();
+	void explode(Bomb*);
+	void deleteBomb(Bomb*);
 
 	void deleteObj(int, int);
 };
