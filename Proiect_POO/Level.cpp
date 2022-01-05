@@ -16,6 +16,9 @@ Level::Level() {
 	map = NULL;
 	bombs = NULL;
 	Player1 = NULL;
+	Player2 = NULL;
+	AI = NULL;
+	AIno = 0;
 	objectCount = new int[5];
 	for (int i = 0; i < 5; ++i) {
 		objectCount[i] = 0;
@@ -97,7 +100,7 @@ void Level::Init() {
 
 }
 
-void Level::Show() {
+int Level::Show() {
 
 	SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelMap], NULL, &MapTexture);
 
@@ -111,7 +114,7 @@ void Level::Show() {
 	for (int i = 0; i < 2; ++i) {
 		if (bombs[i]) {
 			int c = bombs[i]->Show(mapTextureOffset);
-			if ( c == 1) {
+			if (c == 1) {
 				explode(bombs[i]);
 			}
 			if (c == -1) {
@@ -119,9 +122,31 @@ void Level::Show() {
 			}
 		}
 	}
-	Player1->Show(mapTextureOffset);
-
+	if (Player1 != NULL) {
+		if (Player1->Show(mapTextureOffset) != 0) {
+			delete Player1;
+			Player1 = NULL;
+			return victoryCheck();
+		}
+	}
+	if (Player2 != NULL) {
+		if (Player2->Show(mapTextureOffset) != 0) {
+			delete Player2;
+			Player2 = NULL;
+			return victoryCheck();
+		}
+	}
+	for (int i = 0; i < AIno; ++i) {
+		if (AI[i] != NULL) {
+			if (AI[i]->Show(mapTextureOffset) != 0) {
+				delete AI[i];
+				AI[i] = NULL;
+				return victoryCheck();
+			}
+		}
+	}
 	SDL_RenderPresent(TextureManager::Renderer);
+	return 0;
 }
 
 float Level::checkCollision(Player* p) {
@@ -245,9 +270,15 @@ void Level::placeBomb(Player* p) {
 }
 
 void Level::explode(Bomb* b) {
+	
 	b->setAnimState(Bomb::Explosion);
 	int mapX = (int)b->getHitbox().x / 16, mapY = (int)b->getHitbox().y / 16;
 	int blastCounter = 0, range = b->getRange();
+	Player* rip = checkForPlayer(mapX, mapY);
+	if (rip != NULL) {
+		rip->isDead = true;
+		rip->setAnimState(Player::Defeat);
+	}
 	Blast** tempArr = new Blast * [range * 4];
 	//Up
 	for (int i = 1; i <= range; ++i) {
@@ -260,7 +291,7 @@ void Level::explode(Bomb* b) {
 					objTable[2][j]->setAnimState(Obstacle::BlowingUp);
 				}
 			}
-			for (int j = 0; j < objectCount[2]; ++j) {
+			for (int j = 0; j < objectCount[3]; ++j) {
 				if ((int)objTable[3][j]->getHitbox().x == mapX * 16 && (int)objTable[3][j]->getHitbox().y == (mapY - i) * 16) {
 					objTable[3][j]->setAnimState(Obstacle::BlowingUp);
 				}
@@ -275,6 +306,11 @@ void Level::explode(Bomb* b) {
 			else {
 				tempArr[blastCounter - 1]->setAnimState(Blast::VerticalTip);
 			}
+			rip = checkForPlayer(mapX, mapY - i);
+			if (rip != NULL) {
+				rip->isDead = true;
+				rip->setAnimState(Player::Defeat);
+			}
 		}
 	}
 	//Down
@@ -282,13 +318,13 @@ void Level::explode(Bomb* b) {
 		if (map[mapY + i][mapX] == 1) {
 			break;
 		}
-		else if (map[mapY + i][mapX] == 2 || map[mapY][mapX] == 3) {
+		else if (map[mapY + i][mapX] == 2 || map[mapY+i][mapX] == 3) {
 			for (int j = 0; j < objectCount[2]; ++j) {
 				if ((int)objTable[2][j]->getHitbox().x == mapX * 16 && (int)objTable[2][j]->getHitbox().y == (mapY + i) * 16) {
 					objTable[2][j]->setAnimState(Obstacle::BlowingUp);
 				}
 			}
-			for (int j = 0; j < objectCount[2]; ++j) {
+			for (int j = 0; j < objectCount[3]; ++j) {
 				if ((int)objTable[3][j]->getHitbox().x == mapX * 16 && (int)objTable[3][j]->getHitbox().y == (mapY + i) * 16) {
 					objTable[3][j]->setAnimState(Obstacle::BlowingUp);
 				}
@@ -304,6 +340,11 @@ void Level::explode(Bomb* b) {
 				tempArr[blastCounter - 1]->setAnimState(Blast::VerticalTip);
 			}
 		}
+		rip = checkForPlayer(mapX, mapY + i);
+		if (rip != NULL) {
+			rip->isDead = true;
+			rip->setAnimState(Player::Defeat);
+		}
 	}
 	//Left
 	for (int i = 1; i <= range; ++i) {
@@ -316,7 +357,7 @@ void Level::explode(Bomb* b) {
 					objTable[2][j]->setAnimState(Obstacle::BlowingUp);
 				}
 			}
-			for (int j = 0; j < objectCount[2]; ++j) {
+			for (int j = 0; j < objectCount[3]; ++j) {
 				if ((int)objTable[3][j]->getHitbox().x == (mapX - i) * 16 && (int)objTable[3][j]->getHitbox().y == mapY * 16) {
 					objTable[3][j]->setAnimState(Obstacle::BlowingUp);
 				}
@@ -331,6 +372,11 @@ void Level::explode(Bomb* b) {
 			else {
 				tempArr[blastCounter - 1]->setAnimState(Blast::HorizontalTip);
 			}
+			rip = checkForPlayer(mapX - i, mapY);
+			if (rip != NULL) {
+				rip->isDead = true;
+				rip->setAnimState(Player::Defeat);
+			}
 		}
 	}
 	//Right
@@ -344,7 +390,7 @@ void Level::explode(Bomb* b) {
 					objTable[2][j]->setAnimState(Obstacle::BlowingUp);
 				}
 			}
-			for (int j = 0; j < objectCount[2]; ++j) {
+			for (int j = 0; j < objectCount[3]; ++j) {
 				if ((int)objTable[3][j]->getHitbox().x == (mapX + i) * 16 && (int)objTable[3][j]->getHitbox().y == mapY * 16) {
 					objTable[3][j]->setAnimState(Obstacle::BlowingUp);
 				}
@@ -358,6 +404,11 @@ void Level::explode(Bomb* b) {
 			}
 			else {
 				tempArr[blastCounter - 1]->setAnimState(Blast::HorizontalTip);
+			}
+			rip = checkForPlayer(mapX + i, mapY);
+			if (rip != NULL) {
+				rip->isDead = true;
+				rip->setAnimState(Player::Defeat);
 			}
 		}
 	}
@@ -378,4 +429,39 @@ void Level::deleteBomb(Bomb* b) {
 	}
 
 	map[mapY][mapX] = 0;
+}
+
+int Level::victoryCheck() {
+	if (Player1 == NULL && Player2 == NULL) {
+		return -1;
+	}
+	if (AI == NULL) {
+		return 1;
+	}
+	return 0;
+}
+
+Player* Level::checkForPlayer(int x, int y) {
+	int pX, pY;
+	for (int i = 0; i < AIno; ++i) {
+		if (AI[i] != NULL) {
+			pX = (int)AI[i]->getHitbox().x, pY = (int)AI[i]->getHitbox().y;
+			if ((pX / 16 == x && pY / 16 == y) || (pX + 12 / 16 == x && pY + 12 / 16 == y) || (pX + 12 / 16 == x && pY / 16 == y) || (pX / 16 == x && pY + 12 / 16 == y)) {
+				return AI[i];
+			}
+		}
+	}
+	if (Player1 != NULL) {
+		pX = (int)Player1->getHitbox().x, pY = (int)Player1->getHitbox().y;
+		if ((pX / 16 == x && pY / 16 == y) || (pX + 12 / 16 == x && pY + 12 / 16 == y) || (pX + 12 / 16 == x && pY / 16 == y) || (pX / 16 == x && pY + 12 / 16 == y)) {
+			return Player1;
+		}
+	}
+	if (Player2 != NULL) {
+		pX = (int)Player2->getHitbox().x, pY = (int)Player2->getHitbox().y;
+		if ((pX / 16 == x && pY / 16 == y) || (pX + 12 / 16 == x && pY + 12 / 16 == y) || (pX + 12 / 16 == x && pY / 16 == y) || (pX / 16 == x && pY + 12 / 16 == y)) {
+			return Player2;
+		}
+	}
+	return NULL;
 }

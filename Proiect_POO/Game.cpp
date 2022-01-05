@@ -10,6 +10,8 @@ Game::Game() {
 	quitFlag = false;
 	Menus[Main] = new MainMenu;
 	Menus[Pause] = new PauseMenu;
+	Menus[GameOverScreen] = new GameOverMenu;
+	Menus[VictoryScreen] = NULL;// new VictoryMenu;
 	level = new Level;
 }
 
@@ -76,6 +78,7 @@ void Game::Init(void) {
 
 	Menus[Main]->Init();
 	Menus[Pause]->Init();
+	Menus[GameOverScreen]->Init();
 	Menus[Main]->Show();
 	Menu::setMainMenuFlag();
 

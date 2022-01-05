@@ -11,6 +11,7 @@ protected:
 	static bool reloadFlag;
 	static bool isInMainMenuFlag;
 	static bool isInPauseMenuFlag;
+	static bool replayLevelFlag;
 
 public:
 
@@ -37,6 +38,9 @@ public:
 	bool getPauseMenuFlag(void);
 	static void setPauseMenuFlag(void);
 	static void clearPauseMenuFlag(void);
+	bool getReplayLevelFlag(void);
+	static void setReplayLevelFlag(void);
+	static void clearReplayLevelFlag(void);
 #pragma endregion
 
 	virtual void Init(void) = 0;
@@ -80,3 +84,35 @@ public:
 	void Destroy(void);
 };
 
+class GameOverMenu : public Menu {
+public:
+	enum Buttons {
+		Quit,
+		QuitToMenu,
+		Retry
+	};
+
+	GameOverMenu();
+	~GameOverMenu();
+	void Init(void);
+	void Show(void);
+	void Hide(void);
+	void Destroy(void);
+
+};
+
+class VictoryMenu : public Menu {
+public:
+	enum Buttons {
+		Quit,
+		QuitToMenu,
+		Replay
+	};
+
+	VictoryMenu();
+	~VictoryMenu();
+	void Init(void);
+	void Show(void);
+	void Hide(void);
+	void Destroy(void);
+};

@@ -1,7 +1,7 @@
 #include <cmath>
 #include "Player.h"
 
-int Player::numberOfAnimStates = 6;
+int Player::numberOfAnimStates = 8;
 AnimationState* Player::animationStates = NULL;
 
 Player::Player() : SolidObj() {
@@ -11,6 +11,7 @@ Player::Player() : SolidObj() {
 	speed = 0;
 	placedBombs = 0;
 	maxPlacedBombs = 1;
+	isDead = false;
 }
 
 Player::Player(const SDL_Point coord, const int w, const int h) : SolidObj(coord, w, h) {
@@ -20,10 +21,11 @@ Player::Player(const SDL_Point coord, const int w, const int h) : SolidObj(coord
 	speed = 0;
 	placedBombs = 0;
 	maxPlacedBombs = 1;
+	isDead = false;
 }
 
 Player::~Player() {
-	unloadAnimationStates();
+
 }
 
 int Player::getAnimState() {
@@ -43,6 +45,10 @@ int Player::Show(SDL_Point Offset) {
 	currentFrameTime += Timer::getDTime();
 	if (currentFrameTime / 60 >= currentAnimState->secondsPerFrame[currentAnimFrame]) {
 		
+		if (currentAnimState == animationStates + Defeat && isOnLastAnimFrame()) {
+			return -1;
+		}
+
 		if (currentAnimState->numberOfFrames > 1 && isOnLastAnimFrame()) {
 			currentAnimFrame = 0;
 			currentFrameTime = 0;
@@ -56,8 +62,10 @@ int Player::Show(SDL_Point Offset) {
 	if (direction == Left) {
 		flip = SDL_FLIP_HORIZONTAL;
 	}
+
+	SDL_Point spriteOffset = { (currentAnimState->textureArea.w - 12) / 2,currentAnimState->textureArea.h - 12 };
 	SDL_Rect TempSrc = { currentAnimState->textureArea.x + currentAnimFrame * currentAnimState->frameOffset,currentAnimState->textureArea.y,currentAnimState->textureArea.w,currentAnimState->textureArea.h };
-	SDL_Rect TempDest = { (int)((hitbox.x - 2) * 2 + Offset.x),(int)((hitbox.y - 12) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
+	SDL_Rect TempDest = { (int)((hitbox.x - spriteOffset.x) * 2 + Offset.x),(int)((hitbox.y - spriteOffset.y) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
 	SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &TempDest, 0, NULL, flip);
 
 	//SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &hitbox, 0, NULL, flip);
@@ -65,6 +73,7 @@ int Player::Show(SDL_Point Offset) {
 }
 
 void Player::Update(int dTime, float collisionDist, bool dirChanged, bool spdChanged) {
+	//Speed is more of a movement flag: 0 = no movement;1 = forced movement(eg: conveyor belts);2 = voluntary movement
 	if (speed == 2) {
 		if (dirChanged||spdChanged) {
 			switch (direction) {

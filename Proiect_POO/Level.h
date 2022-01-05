@@ -30,19 +30,22 @@ public:
 		ConveyorBelts,
 		Ice
 	};
-	Player* Player1;
+	int AIno;
+	Player* Player1, * Player2, ** AI;
 
 	Level();
 	~Level();
 	
 	void Init(void);
-	void Show(void);
+	int Show(void);
 
 
 	float checkCollision(Player*);
 	void placeBomb(Player*);
 	void explode(Bomb*);
 	void deleteBomb(Bomb*);
+	int victoryCheck(void);
+	Player* checkForPlayer(int, int);
 
 	void deleteObj(int, int);
 };

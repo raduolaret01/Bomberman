@@ -5,6 +5,7 @@ int Menu::loadLevelFlag = 0;
 bool Menu::reloadFlag = false;
 bool Menu::isInMainMenuFlag = false;
 bool Menu::isInPauseMenuFlag = false;
+bool Menu::replayLevelFlag = false;
 
 Menu::Menu() {
 	ButtonArray = NULL;
@@ -88,6 +89,19 @@ void Menu::setPauseMenuFlag() {
 
 void Menu::clearPauseMenuFlag() {
 	isInPauseMenuFlag = false;
+}
+
+bool Menu::getReplayLevelFlag() {
+	return replayLevelFlag;
+}
+
+void Menu::setReplayLevelFlag() {
+	replayLevelFlag = true;
+	isInPauseMenuFlag = false;
+}
+
+void Menu::clearReplayLevelFlag() {
+	replayLevelFlag = false;
 }
 #pragma endregion
 
@@ -251,6 +265,93 @@ void PauseMenu::Hide() {
 }
 
 void PauseMenu::Destroy() {
+	if (ButtonArray) {
+		for (int i = 0; i < 3; ++i) {
+			if (ButtonArray[i]) {
+				delete ButtonArray[i];
+				ButtonArray[i] = NULL;
+			}
+		}
+		delete[] ButtonArray;
+		ButtonArray = NULL;
+	}
+}
+
+//
+
+GameOverMenu::GameOverMenu() :Menu() {}
+
+GameOverMenu::~GameOverMenu() {
+	if (ButtonArray) {
+		for (int i = 0; i < 3; ++i) {
+			if (ButtonArray[i]) {
+				delete ButtonArray[i];
+				ButtonArray[i] = NULL;
+			}
+		}
+		delete[] ButtonArray;
+		ButtonArray = NULL;
+	}
+}
+
+void GameOverMenu::Init() {
+	ButtonArray = new Button * [3];
+	ButtonArray[Quit] = new Button({ 220,310,200,70 }, &Menu::setQuitFlag, "Quit Game");
+	ButtonArray[QuitToMenu] = new Button({ 220,210,200,70 }, &Menu::setReloadFlag, "Main Menu");
+	ButtonArray[Retry] = new Button({ 220,110,200,70 }, &Menu::setReplayLevelFlag, "Retry");
+}
+
+void GameOverMenu::Show() {
+	//Send background to renderer
+
+	SDL_SetTextureColorMod(Background, 0x7F, 0x7F, 0x7F);
+	SDL_RenderCopy(TextureManager::Renderer, Background, NULL, NULL);
+	SDL_SetTextureColorMod(Background, 0xFF, 0xFF, 0xFF);
+
+	//Transform title text into a texture and send it to renderer
+	SDL_Surface* textSurface = TTF_RenderText_Solid(TextureManager::Font[0], "Game Over", { 0xFF,0xFF,0xFF });
+	if (textSurface == NULL) {
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+	else {
+		int tWidth, tHeight;
+		//Create texture from surface pixels
+		SDL_Texture* tTexture = SDL_CreateTextureFromSurface(TextureManager::Renderer, textSurface);
+		if (tTexture == NULL) {
+			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+		}
+		else {
+			//Get text image dimensions
+			tWidth = textSurface->w;
+			tHeight = textSurface->h;
+
+			//Set text to render centered on x axis
+			SDL_Rect temp;
+			temp.x = (640 - tWidth * 2) / 2;
+			temp.y = 30;
+			temp.w = tWidth * 2;
+			temp.h = tHeight * 2;
+			SDL_RenderCopy(TextureManager::Renderer, tTexture, NULL, &temp);
+			//Get rid of old surface
+			SDL_FreeSurface(textSurface);
+			SDL_DestroyTexture(tTexture);
+		}
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		ButtonArray[i]->Show();
+	}
+
+	SDL_RenderPresent(TextureManager::Renderer);
+}
+
+void GameOverMenu::Hide() {
+	SDL_SetRenderDrawColor(TextureManager::Renderer, 0, 0, 0, 0xFF);
+	SDL_RenderClear(TextureManager::Renderer);
+	isInPauseMenuFlag = false;
+}
+
+void GameOverMenu::Destroy() {
 	if (ButtonArray) {
 		for (int i = 0; i < 3; ++i) {
 			if (ButtonArray[i]) {

@@ -9,6 +9,7 @@ protected:
 	int speed;
 public:
 	int range, placedBombs, maxPlacedBombs;
+	bool isDead;
 
 	enum DirectionEnum {
 		Down,
@@ -23,6 +24,8 @@ public:
 		DownMove,
 		SideMove,
 		UpMove,
+		Defeat,
+		Victory
 	};
 
 	Player();
