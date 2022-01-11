@@ -15,7 +15,6 @@ public:
 		Splash,
 		BombTileSet,
 		Player1,
-		Player2,
 		PlayerAI,
 		LevelMap,
 		LevelTileSet,
@@ -27,7 +26,7 @@ public:
 		SmallText
 	};
 
-	static SDL_Texture* Texture[7];
+	static SDL_Texture* Texture[6];
 	static TTF_Font* Font[3];
 	static SDL_Renderer* Renderer;
 

@@ -11,7 +11,7 @@ Game::Game() {
 	Menus[Main] = new MainMenu;
 	Menus[Pause] = new PauseMenu;
 	Menus[GameOverScreen] = new GameOverMenu;
-	Menus[VictoryScreen] = NULL;// new VictoryMenu;
+	Menus[VictoryScreen] = new VictoryMenu;
 	level = new Level;
 }
 
@@ -79,9 +79,10 @@ void Game::Init(void) {
 	Menus[Main]->Init();
 	Menus[Pause]->Init();
 	Menus[GameOverScreen]->Init();
+	Menus[VictoryScreen]->Init();
 	Menus[Main]->Show();
 	Menu::setMainMenuFlag();
-
+	std::srand(SDL_GetTicks());
 }
 
 void Game::Quit(void) {

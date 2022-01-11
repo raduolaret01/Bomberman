@@ -74,6 +74,7 @@ int Player::Show(SDL_Point Offset) {
 
 void Player::Update(int dTime, float collisionDist, bool dirChanged, bool spdChanged) {
 	//Speed is more of a movement flag: 0 = no movement;1 = forced movement(eg: conveyor belts);2 = voluntary movement
+	dTime = std::min(dTime, 20);
 	if (speed == 2) {
 		if (dirChanged||spdChanged) {
 			switch (direction) {

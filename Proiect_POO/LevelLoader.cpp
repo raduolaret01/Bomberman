@@ -57,6 +57,7 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	int smFlag = 0;
 	levelFile >> smFlag;
 
+
 	level->mapH = h;
 	level->mapW = w;
 	level->map = a;
@@ -78,6 +79,8 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	Obstacle1::loadAnimationStates(&levelFile);
 	Obstacle2::loadAnimationStates(&levelFile);
 
+	levelFile >> level->playerNo >> level->AIno;
+
 	delete[] mapPath;
 	delete[] tilesetPath;
 	levelFile.close();
@@ -93,6 +96,17 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	
 	Player::loadAnimationStates(&playerFile);
 
+	playerFile.close();
+
+	playerFile.open("Resources/player1.txt");
+	if (!playerFile.is_open()) {
+		printf("Error opening AI player file!\n");
+		return false;
+	}
+
+	TextureManager::Texture[TextureManager::PlayerAI] = TextureManager::loadTexture("Resources/AIpsprites.png");
+
+	AIplayer::loadAnimationStates(&playerFile);
 	playerFile.close();
 
 	std::ifstream bombFile("Resources/bomb.txt");
@@ -126,7 +140,17 @@ void LevelLoader::unloadLevel(Level* level) {
 		SDL_DestroyTexture(TextureManager::Texture[TextureManager::BombTileSet]);
 		TextureManager::Texture[TextureManager::BombTileSet] = NULL;
 	}
+	if (TextureManager::Texture[TextureManager::PlayerAI]) {
+		SDL_DestroyTexture(TextureManager::Texture[TextureManager::PlayerAI]);
+		TextureManager::Texture[TextureManager::PlayerAI] = NULL;
+	}
 
+	Player::unloadAnimationStates();
+	AIplayer::unloadAnimationStates();
+	Obstacle1::unloadAnimationStates();
+	Obstacle2::unloadAnimationStates();
+	Bomb::unloadAnimationStates();
+	Blast::unloadAnimationStates();
 
 	level->~Level();
 	level = NULL;

@@ -19,6 +19,7 @@ Level::Level() {
 	Player2 = NULL;
 	AI = NULL;
 	AIno = 0;
+	playerNo = 0;
 	objectCount = new int[5];
 	for (int i = 0; i < 5; ++i) {
 		objectCount[i] = 0;
@@ -86,9 +87,23 @@ void Level::Init() {
 
 	Player1 = new Player({ 18,18 }, 12, 12);
 	Player1->range = 2;
-	bombs = new Bomb * [2];
-	bombs[0] = NULL;
-	bombs[1] = NULL;
+	if (playerNo == 2) {
+		Player2 = new Player({ 18,178 }, 12, 12);
+	}
+	AI = new AIplayer * [AIno];
+	if (AIno >= 1) {
+		AI[0] = new AIplayer({ 210,18 }, 12, 12);
+	}
+	if (AIno >= 2) {
+		AI[1] = new AIplayer({ 210,178 }, 12, 12);
+	}
+	if (AIno == 3) {
+		AI[2] = new AIplayer({ 18,178 }, 12, 12);
+	}
+	bombs = new Bomb * [4];
+	for (int i = 0; i < 4; ++i) {
+		bombs[i] = NULL;
+	}
 
 
 	MapTexture.x = 320 - mapTextureW;
@@ -111,14 +126,14 @@ int Level::Show() {
 			}
 		}
 	}
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		if (bombs[i]) {
 			int c = bombs[i]->Show(mapTextureOffset);
 			if (c == 1) {
 				explode(bombs[i]);
 			}
 			if (c == -1) {
-				deleteBomb(bombs[i]);
+				deleteBomb();
 			}
 		}
 	}
@@ -245,7 +260,7 @@ void Level::placeBomb(Player* p) {
 	if (p->placedBombs >= p->maxPlacedBombs) {
 		return;
 	}
-	printf("bomb\n");
+	//printf("bomb\n");
 	int mapX = (int)p->getHitbox().x / 16, mapY = (int)p->getHitbox().y / 16;
 	if (modulo(p->getHitbox().x, 16) >= 8.0f) {
 		++mapX;
@@ -253,19 +268,14 @@ void Level::placeBomb(Player* p) {
 	if (modulo(p->getHitbox().y, 16) >= 8.0f) {
 		++mapY;
 	}
-	if (bombs[0] != NULL && bombs[1] != NULL) {
+	int i;
+	for (i = 0; i < 4 && bombs[i] != NULL; ++i);
+	if (i == 4) {
 		return;
 	}
-	if (bombs[0] == NULL) {
-		++p->placedBombs;
-		bombs[0] = new Bomb({ mapX * 16,mapY * 16 }, 16, 16, p);
-		map[mapY][mapX] = BombT;
-	}
-	else {
-		++p->placedBombs;
-		bombs[0] = new Bomb({ mapX * 16,mapY * 16 }, 16, 16, p);
-		map[mapY][mapX] = BombT;
-	}
+	bombs[i] = new Bomb({ mapX * 16,mapY * 16 }, 16, 16, p);
+	map[mapY][mapX] = BombT;
+	++p->placedBombs;
 
 }
 
@@ -415,19 +425,14 @@ void Level::explode(Bomb* b) {
 	b->setBlast(tempArr, blastCounter);
 }
 
-void Level::deleteBomb(Bomb* b) {
-	int mapX = (int)b->getHitbox().x / 16, mapY = (int)b->getHitbox().y / 16;
-	--b->owner->placedBombs;
-	if (b == bombs[0]) {
-		delete b;
-		bombs[0] = bombs[1];
-		bombs[1] = NULL;
+void Level::deleteBomb() {
+	int mapX = (int)bombs[0]->getHitbox().x / 16, mapY = (int)bombs[0]->getHitbox().y / 16;
+	--bombs[0]->owner->placedBombs;
+	for (int i = 0; i < 3; ++i) {
+		bombs[i] = bombs[i + 1];
 	}
-	else {
-		delete b;
-		bombs[1] = NULL;
-	}
-
+	bombs[3] = NULL;
+	
 	map[mapY][mapX] = 0;
 }
 
@@ -435,10 +440,13 @@ int Level::victoryCheck() {
 	if (Player1 == NULL && Player2 == NULL) {
 		return -1;
 	}
-	if (AI == NULL) {
-		return 1;
+	int vic = 1;
+	for (int i = 0; i < AIno; ++i) {
+		if (AI[i] != NULL) {
+			vic = 0;
+		}
 	}
-	return 0;
+	return vic;
 }
 
 Player* Level::checkForPlayer(int x, int y) {
@@ -446,22 +454,391 @@ Player* Level::checkForPlayer(int x, int y) {
 	for (int i = 0; i < AIno; ++i) {
 		if (AI[i] != NULL) {
 			pX = (int)AI[i]->getHitbox().x, pY = (int)AI[i]->getHitbox().y;
-			if ((pX / 16 == x && pY / 16 == y) || (pX + 12 / 16 == x && pY + 12 / 16 == y) || (pX + 12 / 16 == x && pY / 16 == y) || (pX / 16 == x && pY + 12 / 16 == y)) {
+			if ((pX / 16 == x && pY / 16 == y) || ((pX + 12) / 16 == x && (pY + 12) / 16 == y) || ((pX + 12) / 16 == x && pY / 16 == y) || (pX / 16 == x && (pY + 12) / 16 == y)) {
 				return AI[i];
 			}
 		}
 	}
 	if (Player1 != NULL) {
 		pX = (int)Player1->getHitbox().x, pY = (int)Player1->getHitbox().y;
-		if ((pX / 16 == x && pY / 16 == y) || (pX + 12 / 16 == x && pY + 12 / 16 == y) || (pX + 12 / 16 == x && pY / 16 == y) || (pX / 16 == x && pY + 12 / 16 == y)) {
+		if ((pX / 16 == x && pY / 16 == y) || ((pX + 12) / 16 == x && (pY + 12) / 16 == y) || ((pX + 12) / 16 == x && pY / 16 == y) || (pX / 16 == x && (pY + 12) / 16 == y)) {
 			return Player1;
 		}
 	}
 	if (Player2 != NULL) {
 		pX = (int)Player2->getHitbox().x, pY = (int)Player2->getHitbox().y;
-		if ((pX / 16 == x && pY / 16 == y) || (pX + 12 / 16 == x && pY + 12 / 16 == y) || (pX + 12 / 16 == x && pY / 16 == y) || (pX / 16 == x && pY + 12 / 16 == y)) {
+		if ((pX / 16 == x && pY / 16 == y) || ((pX + 12) / 16 == x && (pY + 12) / 16 == y) || ((pX + 12) / 16 == x && pY / 16 == y) || (pX / 16 == x && (pY + 12) / 16 == y)) {
 			return Player2;
 		}
 	}
 	return NULL;
+}
+
+void Level::AIDecisionMaking(AIplayer* ai) {
+	if (ai->isDead) {
+		return;
+	}
+	ai->reactionTime += Timer::getDTime();
+	if ((ai->state == AIplayer::NoEscape) || (modulo(ai->getHitbox().x, 16) > 4.0f || modulo(ai->getHitbox().y, 16) > 4.0f) || (ai->reactionTime < ai->reactionDelay && ai->state == AIplayer::Default)) {
+		ai->Update(Timer::getDTime(), checkCollision(ai), false, false);
+		return;
+	}
+	ai->reactionTime = 0;
+	bool* validDirection = new bool[4];
+
+	for (int i = 0; i < 4; ++i) {
+		validDirection[i] = false;
+	}
+
+	int mapX = (int)ai->getHitbox().x / 16, mapY = (int)ai->getHitbox().y / 16;
+
+	if (isInRangeOfBomb(mapX, mapY)) {
+		ai->state = AIplayer::InRangeOfBomb;
+		//"Pathfinding" towards a safe tile in a 5 tile "radius"
+		//Up
+		for (int i = 1; i < 6 && !validDirection[Player::Up] && mapY - i > 0; ++i) {
+			if (map[mapY - i][mapX] == 0) {
+				if (!isInRangeOfBomb(mapX, mapY - i)) {
+					validDirection[Player::Up] = true;
+					break;
+				}
+				else {
+					for (int j = 1; i + j < 6 && !validDirection[Player::Up] && mapX - j > 0; ++j) {
+						if (map[mapY - i][mapX - j] == 0) {
+							if (!isInRangeOfBomb(mapX - j, mapY - i)) {
+								validDirection[Player::Up] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (map[mapY - i + 1][mapX - j] == 0 && !isInRangeOfBomb(mapX - j, mapY - i + 1)) {
+									validDirection[Player::Up] = true;
+									break;
+								}
+								if (mapY - i - 1 > 0 && map[mapY - i - 1][mapX - j] == 0 && !isInRangeOfBomb(mapX - j, mapY - i - 1)) {
+									validDirection[Player::Up] = true;
+									break;
+								}
+							}
+						}
+						else break;
+					}
+					for (int j = 1; i + j < 6 && !validDirection[Player::Up] && mapX + j < mapW; ++j) {
+						if (map[mapY - i][mapX + j] == 0) {
+							if (!isInRangeOfBomb(mapX + j, mapY - i)) {
+								validDirection[Player::Up] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (map[mapY - i + 1][mapX + j] == 0 && !isInRangeOfBomb(mapX + j, mapY - i + 1)) {
+									validDirection[Player::Up] = true;
+									break;
+								}
+								if (mapY - i - 1 > 0 && map[mapY - i - 1][mapX + j] == 0 && !isInRangeOfBomb(mapX + j, mapY - i - 1)) {
+									validDirection[Player::Up] = true;
+									break;
+								}
+							}
+						}
+						else break;
+					}
+				}
+			}
+			else {
+				break;
+			}
+			
+		}
+		//Down
+		for (int i = 1; i < 6 && !validDirection[Player::Down] && mapY + i < mapH; ++i) {
+			if (map[mapY + i][mapX] == 0) {
+				if (!isInRangeOfBomb(mapX, mapY + i)) {
+					validDirection[Player::Down] = true;
+					break;
+				}
+				else {
+					for (int j = 1; i + j < 6 && !validDirection[Player::Down] && mapX - j>0; ++j) {
+						if (map[mapY + i][mapX - j] == 0) {
+							if (!isInRangeOfBomb(mapX - j, mapY + i)) {
+								validDirection[Player::Down] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (mapY + i + 1 < mapH && map[mapY + i + 1][mapX - j] == 0 && !isInRangeOfBomb(mapX - j, mapY + i + 1)) {
+									validDirection[Player::Down] = true;
+									break;
+								}
+								if (map[mapY + i - 1][mapX - j] == 0 && !isInRangeOfBomb(mapX - j, mapY + i - 1)) {
+									validDirection[Player::Down] = true;
+									break;
+								}
+							}
+						}
+						else break;
+					}
+					for (int j = 1; i + j < 6 && !validDirection[Player::Down] && mapX + j < mapW; ++j) {
+						if (map[mapY + i][mapX + j] == 0) {
+							if (!isInRangeOfBomb(mapX + j, mapY - i)) {
+								validDirection[Player::Down] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (mapY + i + 1 < mapH && map[mapY + i + 1][mapX + j] == 0 && !isInRangeOfBomb(mapX + j, mapY + i + 1)) {
+									validDirection[Player::Down] = true;
+									break;
+								}
+								if (map[mapY + i - 1][mapX + j] == 0 && !isInRangeOfBomb(mapX + j, mapY + i + 1)) {
+									validDirection[Player::Down] = true;
+									break;
+								}
+							}
+						}
+						else break;
+					}
+				}
+			}
+			else {
+				break;
+			}
+
+		}
+		//Left
+		for (int i = 1; i < 6 && !validDirection[Player::Left] && mapX - i > 0; ++i) {
+			if (map[mapY][mapX - i] == 0) {
+				if (!isInRangeOfBomb(mapX - i, mapY)) {
+					validDirection[Player::Left] = true;
+					break;
+				}
+				else {
+					for (int j = 1; i + j < 6 && !validDirection[Player::Left] && mapY - j >0; ++j) {
+						if (map[mapY - j][mapX - i] == 0) {
+							if (!isInRangeOfBomb(mapX - i, mapY - j)) {
+								validDirection[Player::Left] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (mapX - i - 1 > 0 && map[mapY - j][mapX - i - 1] == 0 && !isInRangeOfBomb(mapX - i - 1, mapY - j)) {
+									validDirection[Player::Left] = true;
+									break;
+								}
+								if (map[mapY - j][mapX - i + 1] == 0 && !isInRangeOfBomb(mapX - i + 1, mapY - j)) {
+									validDirection[Player::Left] = true;
+									break;
+								}
+							}
+						}
+						else {
+							break;
+						}
+					}
+					for (int j = 1; i + j < 6 && !validDirection[Player::Left] && mapY + j < mapH; ++j) {
+						if (map[mapY + j][mapX - i] == 0) {
+							if (!isInRangeOfBomb(mapX - i, mapY + j)) {
+								validDirection[Player::Left] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (mapX - i - 1 > 0 && map[mapY + j][mapX - i - 1] == 0 && !isInRangeOfBomb(mapX - i - 1, mapY + j)) {
+									validDirection[Player::Left] = true;
+									break;
+								}
+								if (map[mapY + j][mapX - i + 1] == 0 && !isInRangeOfBomb(mapX - i + 1, mapY + j)) {
+									validDirection[Player::Left] = true;
+									break;
+								}
+							}
+						}
+						else {
+							break;
+						}
+					}
+				}
+			}
+			else {
+				break;
+			}
+		}
+		//Right
+		for (int i = 1; i < 6 && !validDirection[Player::Right] && mapX + i < mapW; ++i) {
+			if (map[mapY][mapX + i] == 0) {
+				if (!isInRangeOfBomb(mapX + i, mapY)) {
+					validDirection[Player::Right] = true;
+					break;
+				}
+				else {
+					for (int j = 1; i + j < 6 && !validDirection[Player::Left] && mapY - j > 0; ++j) {
+						if (map[mapY - j][mapX + i] == 0) {
+							if (!isInRangeOfBomb(mapX + i, mapY - j)) {
+								validDirection[Player::Right] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (map[mapY - j][mapX + i - 1] == 0 && !isInRangeOfBomb(mapX + i - 1, mapY - j)) {
+									validDirection[Player::Right] = true;
+									break;
+								}
+								if (mapX + i + 1 < mapW  && map[mapY - j][mapX + i + 1] == 0 && !isInRangeOfBomb(mapX + i + 1, mapY - j)) {
+									validDirection[Player::Right] = true;
+									break;
+								}
+							}
+						}
+						else {
+							break;
+						}
+					}
+					for (int j = 1; i + j < 6 && !validDirection[Player::Left] && mapY + j < mapH; ++j) {
+						if (map[mapY + j][mapX + i] == 0) {
+							if (!isInRangeOfBomb(mapX + i, mapY + j)) {
+								validDirection[Player::Right] = true;
+								break;
+							}
+							else if (i + j < 5) {
+								if (map[mapY + j][mapX + i - 1] == 0 && !isInRangeOfBomb(mapX + i - 1, mapY + j)) {
+									validDirection[Player::Right] = true;
+									break;
+								}
+								if (mapX + i + 1 < mapW && map[mapY + j][mapX + i + 1] == 0 && !isInRangeOfBomb(mapX + i + 1, mapY + j)) {
+									validDirection[Player::Right] = true;
+									break;
+								}
+							}
+						}
+						else {
+							break;
+						}
+					}
+				}
+			}
+			else {
+				break;
+			}
+		}
+		//End of "pathfinding"
+		if (validDirection[0] || validDirection[1] || validDirection[2] || validDirection[3]) {
+			int dir = std::rand() % 4;
+			while (!validDirection[dir]) {
+				++dir;
+				dir %= 4;
+			}
+			ai->Update(Timer::getDTime(), checkCollision(ai), ai->setDirection(dir), ai->setSpeed(2));
+		}
+		else {
+			ai->state = AIplayer::NoEscape;
+			printf("Doom\n");
+			ai->Update(Timer::getDTime(), -1.0f, false, ai->setSpeed(0));
+		}
+
+	}
+	else {
+		ai->state = AIplayer::Default;
+		if (map[mapY - 1][mapX] == 0 && !isInRangeOfBomb(mapX, mapY - 1)) {
+			validDirection[Player::Up] = true;
+		}
+		if (map[mapY + 1][mapX] == 0 && !isInRangeOfBomb(mapX, mapY + 1)) {
+			validDirection[Player::Down] = true;
+		}
+		if (map[mapY][mapX - 1] == 0 && !isInRangeOfBomb(mapX - 1, mapY)) {
+			validDirection[Player::Left] = true;
+		}
+		if (map[mapY][mapX + 1] == 0 && !isInRangeOfBomb(mapX + 1, mapY)) {
+			validDirection[Player::Right] = true;
+		}
+		if (map[mapY - 1][mapX] == 2 || map[mapY - 1][mapX] == 3 || map[mapY + 1][mapX] == 2 || map[mapY + 1][mapX] == 3 || map[mapY][mapX - 1] == 2 || map[mapY][mapX - 1] == 3 || map[mapY][mapX + 1] == 2 || map[mapY][mapX + 1] == 3) {
+			placeBomb(ai);
+		}
+		Player* dummy = checkForPlayer(mapX, mapY - 1);
+		if (dummy != NULL && dummy != ai) {
+			placeBomb(ai);
+		}
+		dummy = checkForPlayer(mapX, mapY + 1);
+		if (dummy != NULL && dummy != ai) {
+			placeBomb(ai);
+		}
+		dummy = checkForPlayer(mapX - 1, mapY);
+		if (dummy != NULL && dummy != ai) {
+			placeBomb(ai);
+		}
+		dummy = checkForPlayer(mapX + 1, mapY);
+		if (dummy != NULL && dummy != ai) {
+			placeBomb(ai);
+		}
+		if (validDirection[0] || validDirection[1] || validDirection[2] || validDirection[3]) {
+			int dir = std::rand() % 4;
+			while (!validDirection[dir]) {
+				++dir;
+				dir %= 4;
+			}
+			ai->Update(Timer::getDTime(), checkCollision(ai), ai->setDirection(dir), ai->setSpeed(2));
+		}
+		else {
+			ai->Update(Timer::getDTime(), -1.0f, false, ai->setSpeed(0));
+		}
+	}
+}
+
+bool Level::isInRangeOfBomb(int x, int y) {
+
+	//Bomb range is supposed to have a range from 1 to 3, so we check 4 tiles in every direction
+	if (map[y][x] == 4) {
+		for (int j = 0; j < 4; ++j) {
+			if (bombs[j]!=NULL && (int)bombs[j]->getHitbox().x/16 == x && (int)bombs[j]->getHitbox().y/16 == y) {
+				return true;
+			}
+		}
+		//return true;
+	}
+	for (int i = 1; i < 5; ++i) {
+		if (map[y - i][x] == 1 || map[y - i][x] == 2 || map[y - i][x] == 3) {
+			break;
+		}
+		else if (map[y - i][x] == 4) {
+			for (int j = 0; j < 4; ++j) {
+				if (bombs[j]!= NULL && (int)bombs[j]->getHitbox().x/16 == x && (int)bombs[j]->getHitbox().y/16 == y - i && bombs[j]->getRange() >= i) {
+					return true;
+				}
+			}
+			//return true;
+		}
+	}
+	for (int i = 1; i < 5; ++i) {
+		if (map[y + i][x] == 1 || map[y + i][x] == 2 || map[y + i][x] == 3) {
+			break;
+		}
+		else if (map[y + i][x] == 4) {
+			for (int j = 0; j < 4; ++j) {
+				if (bombs[j]!=NULL && (int)bombs[j]->getHitbox().x/16 == x && (int)bombs[j]->getHitbox().y/16 == y + i && bombs[j]->getRange() >= i) {
+					return true;
+				}
+			}
+			//return true;
+		}
+	}
+	for (int i = 1; i < 5; ++i) {
+		if (map[y][x - i] == 1 || map[y][x - i] == 2 || map[y][x - i] == 3) {
+			break;
+		}
+		else if (map[y][x - i] == 4) {
+			for (int j = 0; j < 4; ++j) {
+				if (bombs[j]!=NULL && (int)bombs[j]->getHitbox().x/16 == x - i && (int)bombs[j]->getHitbox().y/16 == y && bombs[j]->getRange() >= i) {
+					return true;
+				}
+			}
+			//return true;
+		}
+	}
+	for (int i = 1; i < 5; ++i) {
+		if (map[y][x + i] == 1 || map[y][x + i] == 2 || map[y][x + i] == 3) {
+			break;
+		}
+		else if (map[y][x + i] == 4) {
+			for (int j = 0; j < 4; ++j) {
+				if (bombs[j]!=NULL && (int)bombs[j]->getHitbox().x/16 == x + i && (int)bombs[j]->getHitbox().y/16 == y && bombs[j]->getRange() >= i) {
+					return true;
+				}
+			}
+			//return true;
+		}
+	}
+	return false;
+
 }

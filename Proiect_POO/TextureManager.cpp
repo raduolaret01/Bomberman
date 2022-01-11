@@ -1,6 +1,6 @@
 #include "TextureManager.h"
 
-SDL_Texture* TextureManager::Texture[7] = { NULL };
+SDL_Texture* TextureManager::Texture[6] = { NULL };
 SDL_Renderer* TextureManager::Renderer = NULL;
 TTF_Font* TextureManager::Font[3] = { NULL };
 

@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 #include "SoundManager.h"
 #include "Obstacle.h"
-#include "Player.h"
+#include "AIplayer.h"
 #include "Bomb.h"
 
 class Level{
@@ -30,8 +30,9 @@ public:
 		ConveyorBelts,
 		Ice
 	};
-	int AIno;
-	Player* Player1, * Player2, ** AI;
+	int AIno,playerNo;
+	Player* Player1, * Player2;
+	AIplayer** AI;
 
 	Level();
 	~Level();
@@ -43,9 +44,11 @@ public:
 	float checkCollision(Player*);
 	void placeBomb(Player*);
 	void explode(Bomb*);
-	void deleteBomb(Bomb*);
+	void deleteBomb(void);
 	int victoryCheck(void);
 	Player* checkForPlayer(int, int);
+	void AIDecisionMaking(AIplayer*);
+	bool isInRangeOfBomb(int, int);
 
 	void deleteObj(int, int);
 };

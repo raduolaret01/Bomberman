@@ -110,6 +110,12 @@ int main() {
 							}
 						}
 
+						for (int i = 0; i < G.level->AIno; ++i) {
+							if (G.level->AI[i] != NULL) {
+								G.level->AIDecisionMaking(G.level->AI[i]);
+							}
+						}
+
 						if (e.type == SDL_QUIT) {
 							isRunning = false;
 						}
@@ -159,6 +165,53 @@ int main() {
 								G.level = NULL;
 							}
 							else if (G.Menus[Game::GameOverScreen]->getReplayLevelFlag()) {
+								G.levelLoader.unloadLevel(G.level);
+								G.level = new Level;
+								G.levelLoader.levelLoaded = G.levelLoader.loadLevel(G.level, G.Menus[Game::Main]->getLoadLevelFlag());
+								G.level->Init();
+							}
+						}
+						if (vCheck == 1) {
+							Menu::setPauseMenuFlag();
+							SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 640, 480);
+							if (TempTexture == NULL) {
+								printf("Unable to render blank background texture! SDL Error: %s\n", SDL_GetError());
+							}
+							else {
+								SDL_SetRenderTarget(TextureManager::Renderer, TempTexture);
+								G.level->Show();
+								SDL_SetRenderTarget(TextureManager::Renderer, NULL);
+							}
+							if (G.Menus[Game::VictoryScreen]->Background) {
+								SDL_DestroyTexture(G.Menus[Game::VictoryScreen]->Background);
+							}
+							G.Menus[Game::VictoryScreen]->Background = TempTexture;
+							G.Menus[Game::VictoryScreen]->Show();
+							while (G.Menus[Game::VictoryScreen]->getPauseMenuFlag() && !(G.Menus[Game::Main]->getQuitFlag()) && isRunning) {
+								while (SDL_PollEvent(&e) != 0) {
+									if (e.type == SDL_QUIT)
+										isRunning = false;
+									for (int i = 0; i < 3; ++i) {
+										G.Menus[Game::VictoryScreen]->ButtonArray[i]->handleEvent(&e);
+									}
+								}
+								SDL_SetRenderDrawColor(TextureManager::Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+								SDL_RenderClear(TextureManager::Renderer);
+								G.Menus[Game::VictoryScreen]->Show();
+								Timer::setDTime();
+							}
+							if (G.Menus[Game::VictoryScreen]->getReloadFlag()) {
+								G.levelLoader.unloadLevel(G.level);
+								G.level = NULL;
+								Menu::clearFlags();
+								Menu::setMainMenuFlag();
+								G.Menus[Game::Main]->Show();
+							}
+							else if (G.Menus[Game::VictoryScreen]->getQuitFlag()) {
+								G.levelLoader.unloadLevel(G.level);
+								G.level = NULL;
+							}
+							else if (G.Menus[Game::VictoryScreen]->getReplayLevelFlag()) {
 								G.levelLoader.unloadLevel(G.level);
 								G.level = new Level;
 								G.levelLoader.levelLoaded = G.levelLoader.loadLevel(G.level, G.Menus[Game::Main]->getLoadLevelFlag());
