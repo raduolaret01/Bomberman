@@ -89,6 +89,7 @@ void Level::Init() {
 	Player1->range = 2;
 	if (playerNo == 2) {
 		Player2 = new Player({ 18,178 }, 12, 12);
+		Player2->range = 2;
 	}
 	AI = new AIplayer * [AIno];
 	if (AIno >= 1) {
@@ -787,7 +788,7 @@ bool Level::isInRangeOfBomb(int x, int y) {
 		}
 		//return true;
 	}
-	for (int i = 1; i < 5; ++i) {
+	for (int i = 1; i < 5 && y - i > 0; ++i) {
 		if (map[y - i][x] == 1 || map[y - i][x] == 2 || map[y - i][x] == 3) {
 			break;
 		}
@@ -800,7 +801,7 @@ bool Level::isInRangeOfBomb(int x, int y) {
 			//return true;
 		}
 	}
-	for (int i = 1; i < 5; ++i) {
+	for (int i = 1; i < 5 && y + i < mapH; ++i) {
 		if (map[y + i][x] == 1 || map[y + i][x] == 2 || map[y + i][x] == 3) {
 			break;
 		}
@@ -813,7 +814,7 @@ bool Level::isInRangeOfBomb(int x, int y) {
 			//return true;
 		}
 	}
-	for (int i = 1; i < 5; ++i) {
+	for (int i = 1; i < 5 && x - i > 0; ++i) {
 		if (map[y][x - i] == 1 || map[y][x - i] == 2 || map[y][x - i] == 3) {
 			break;
 		}
@@ -826,7 +827,7 @@ bool Level::isInRangeOfBomb(int x, int y) {
 			//return true;
 		}
 	}
-	for (int i = 1; i < 5; ++i) {
+	for (int i = 1; i < 5 && x + i < mapW; ++i) {
 		if (map[y][x + i] == 1 || map[y][x + i] == 2 || map[y][x + i] == 3) {
 			break;
 		}

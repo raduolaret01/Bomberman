@@ -62,6 +62,8 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	level->mapW = w;
 	level->map = a;
 	level->specialMechanics = smFlag;
+
+	levelFile >> level->playerNo >> level->AIno;
 	
 	char* mapPath = new char[24], * tilesetPath = new char[26];
 	
@@ -78,8 +80,6 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 
 	Obstacle1::loadAnimationStates(&levelFile);
 	Obstacle2::loadAnimationStates(&levelFile);
-
-	levelFile >> level->playerNo >> level->AIno;
 
 	delete[] mapPath;
 	delete[] tilesetPath;

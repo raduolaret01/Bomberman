@@ -109,6 +109,27 @@ int main() {
 								G.level->placeBomb(G.level->Player1);
 							}
 						}
+						if (G.level->Player2 != NULL && !G.level->Player2->isDead) {
+							if (currentKeyStates[SDL_SCANCODE_UP]) {
+								G.level->Player2->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player2), G.level->Player2->setDirection(Player::Up), G.level->Player2->setSpeed(2));
+							}
+							if (currentKeyStates[SDL_SCANCODE_RIGHT]) {
+								G.level->Player2->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player2), G.level->Player2->setDirection(Player::Right), G.level->Player2->setSpeed(2));
+							}
+							if (currentKeyStates[SDL_SCANCODE_DOWN]) {
+								G.level->Player2->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player2), G.level->Player2->setDirection(Player::Down), G.level->Player2->setSpeed(2));
+							}
+							if (currentKeyStates[SDL_SCANCODE_LEFT]) {
+								G.level->Player2->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player2), G.level->Player2->setDirection(Player::Left), G.level->Player2->setSpeed(2));
+							}
+							if (!(currentKeyStates[SDL_SCANCODE_UP] || currentKeyStates[SDL_SCANCODE_LEFT] || currentKeyStates[SDL_SCANCODE_DOWN] || currentKeyStates[SDL_SCANCODE_RIGHT])) {
+								G.level->Player2->Update(Timer::getDTime(), -1.0f, false, G.level->Player2->setSpeed(0));
+							}
+
+							if (currentKeyStates[SDL_SCANCODE_SLASH]) {
+								G.level->placeBomb(G.level->Player2);
+							}
+						}
 
 						for (int i = 0; i < G.level->AIno; ++i) {
 							if (G.level->AI[i] != NULL) {

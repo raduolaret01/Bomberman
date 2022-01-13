@@ -20,23 +20,23 @@
 
 0
 
-1 1
+2 2
 
-Resources/level1map.png
-Resources/level1tiles.png
+Resources/level4map.png
+Resources/level4tiles.png
 
-1 32 16 16
+1 15 16 16
 1 0
 1
 
-18 32 16 16
+18 15 16 16
+6 17
+1 1 1 1 1 1 
+
+1 32 16 16
+12 17
+1 1 1 1 1 1 1 1 1 1 1 1
+
+1 49 16 16
 7 17
 1 1 1 1 1 1 1
-
-1 15 16 16
-4 17
-1 1 1 1
-
-69 15 16 16
-6 17
-1 1 1 1 1 1
