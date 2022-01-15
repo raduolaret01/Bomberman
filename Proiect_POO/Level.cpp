@@ -261,7 +261,6 @@ void Level::placeBomb(Player* p) {
 	if (p->placedBombs >= p->maxPlacedBombs) {
 		return;
 	}
-	//Logs::logF<<("bomb\n");
 	int mapX = (int)p->getHitbox().x / 16, mapY = (int)p->getHitbox().y / 16;
 	if (modulo(p->getHitbox().x, 16) >= 8.0f) {
 		++mapX;
@@ -512,7 +511,7 @@ void Level::AIDecisionMaking(AIplayer* ai) {
 		return;
 	}
 	ai->reactionTime += Timer::getDTime();
-	if ((ai->state == AIplayer::NoEscape) || (modulo(ai->getHitbox().x, 16) > 4.0f || modulo(ai->getHitbox().y, 16) > 4.0f) || (ai->reactionTime < ai->reactionDelay && ai->state == AIplayer::Default)) {
+	if ((modulo(ai->getHitbox().x, 16) > 4.0f || modulo(ai->getHitbox().y, 16) > 4.0f) || (ai->reactionTime < ai->reactionDelay && ai->state == AIplayer::Default)) {
 		ai->Update(Timer::getDTime(), checkCollision(ai), false, false);
 		return;
 	}
@@ -757,7 +756,6 @@ void Level::AIDecisionMaking(AIplayer* ai) {
 		}
 		else {
 			ai->state = AIplayer::NoEscape;
-			Logs::logF<<("Doom\n");
 			ai->Update(Timer::getDTime(), -1.0f, false, ai->setSpeed(0));
 		}
 

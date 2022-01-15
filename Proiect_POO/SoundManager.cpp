@@ -68,7 +68,7 @@ bool SoundManager::loadSFX() {
 Mix_Music* SoundManager::loadMusic(const char* path) {
 	Mix_Music* newMusic = Mix_LoadMUS(path);
 	if (newMusic == NULL) {
-		Logs::logF<<("Error loading music! SDL_mixer Error: %s\n", Mix_GetError());
+		Logs::logF << "Error loading music! SDL_mixer Error: " << Mix_GetError() << std::endl;
 	}
 	return newMusic;
 }
