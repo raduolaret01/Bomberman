@@ -32,6 +32,16 @@ bool AIplayer::isOnLastAnimFrame() {
 
 int AIplayer::Show(SDL_Point Offset) {
 	currentFrameTime += Timer::getDTime();
+
+	if (soundChannel != -1) {
+		if (speed == 0) {
+			Mix_Pause(soundChannel);
+		}
+		else {
+			Mix_Resume(soundChannel);
+		}
+	}
+
 	if (currentFrameTime / 60 >= currentAnimState->secondsPerFrame[currentAnimFrame]) {
 
 		if (currentAnimState == animationStates + Defeat && isOnLastAnimFrame()) {

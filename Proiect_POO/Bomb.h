@@ -10,7 +10,6 @@ private:
 
 protected:
 	int direction;
-
 public:
 	enum DirectionEnum {
 		Down,

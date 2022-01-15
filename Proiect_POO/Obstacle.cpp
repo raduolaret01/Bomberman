@@ -76,7 +76,6 @@ int Obstacle1::Show(SDL_Point Offset) {
 	SDL_Rect TempDest = { hitbox.x * 2 + Offset.x,hitbox.y * 2 + Offset.y,hitbox.w * 2,hitbox.h * 2 };
 	SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelTileSet], &TempSrc, &TempDest);
 
-	//SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelTileSet], &TempSrc, &hitbox);
 	return 0;
 }
 
@@ -147,7 +146,6 @@ int Obstacle2::Show(SDL_Point Offset) {
 	SDL_Rect TempDest = { hitbox.x * 2 + Offset.x,hitbox.y * 2 + Offset.y,hitbox.w * 2,hitbox.h * 2 };
 	SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelTileSet], &TempSrc, &TempDest);
 
-	//SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelTileSet], &TempSrc, &hitbox);
 	return 0;
 }
 

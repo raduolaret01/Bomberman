@@ -261,7 +261,7 @@ void Level::placeBomb(Player* p) {
 	if (p->placedBombs >= p->maxPlacedBombs) {
 		return;
 	}
-	//printf("bomb\n");
+	//Logs::logF<<("bomb\n");
 	int mapX = (int)p->getHitbox().x / 16, mapY = (int)p->getHitbox().y / 16;
 	if (modulo(p->getHitbox().x, 16) >= 8.0f) {
 		++mapX;
@@ -274,6 +274,7 @@ void Level::placeBomb(Player* p) {
 	if (i == 4) {
 		return;
 	}
+	Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Bomb_Place], 0);
 	bombs[i] = new Bomb({ mapX * 16,mapY * 16 }, 16, 16, p);
 	map[mapY][mapX] = BombT;
 	++p->placedBombs;
@@ -281,16 +282,23 @@ void Level::placeBomb(Player* p) {
 }
 
 void Level::explode(Bomb* b) {
-	
 	b->setAnimState(Bomb::Explosion);
+	Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Bomb_Boom], 0);
 	int mapX = (int)b->getHitbox().x / 16, mapY = (int)b->getHitbox().y / 16;
 	int blastCounter = 0, range = b->getRange();
 	Player* rip = checkForPlayer(mapX, mapY);
 	if (rip != NULL) {
 		rip->isDead = true;
 		rip->setAnimState(Player::Defeat);
+		if (dynamic_cast<AIplayer*>(rip)) {
+			Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::NPC_Death], 0);
+		}
+		else {
+			Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Player_Death], 0);
+		}
 	}
-	Blast** tempArr = new Blast * [range * 4];
+	int tempArrSize = range * 4;
+	Blast** tempArr = new Blast * [tempArrSize];
 	//Up
 	for (int i = 1; i <= range; ++i) {
 		if (map[mapY - i][mapX] == 1) {
@@ -321,6 +329,12 @@ void Level::explode(Bomb* b) {
 			if (rip != NULL) {
 				rip->isDead = true;
 				rip->setAnimState(Player::Defeat);
+				if (dynamic_cast<AIplayer*>(rip)) {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::NPC_Death], 0);
+				}
+				else {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Player_Death], 0);
+				}
 			}
 		}
 	}
@@ -355,6 +369,12 @@ void Level::explode(Bomb* b) {
 		if (rip != NULL) {
 			rip->isDead = true;
 			rip->setAnimState(Player::Defeat);
+			if (dynamic_cast<AIplayer*>(rip)) {
+				Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::NPC_Death], 0);
+			}
+			else {
+				Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Player_Death], 0);
+			}
 		}
 	}
 	//Left
@@ -387,6 +407,12 @@ void Level::explode(Bomb* b) {
 			if (rip != NULL) {
 				rip->isDead = true;
 				rip->setAnimState(Player::Defeat);
+				if (dynamic_cast<AIplayer*>(rip)) {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::NPC_Death], 0);
+				}
+				else {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Player_Death], 0);
+				}
 			}
 		}
 	}
@@ -420,6 +446,12 @@ void Level::explode(Bomb* b) {
 			if (rip != NULL) {
 				rip->isDead = true;
 				rip->setAnimState(Player::Defeat);
+				if (dynamic_cast<AIplayer*>(rip)) {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::NPC_Death], 0);
+				}
+				else {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Player_Death], 0);
+				}
 			}
 		}
 	}
@@ -725,7 +757,7 @@ void Level::AIDecisionMaking(AIplayer* ai) {
 		}
 		else {
 			ai->state = AIplayer::NoEscape;
-			printf("Doom\n");
+			Logs::logF<<("Doom\n");
 			ai->Update(Timer::getDTime(), -1.0f, false, ai->setSpeed(0));
 		}
 

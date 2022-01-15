@@ -28,11 +28,11 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 		levelFile.open("Resources/level5.txt");
 		break;
 	default:
-		printf("Error: Level not implemented!\n");
+		Logs::logF << "Error: Level not implemented!\n";
 		return false;
 	}
 	if (!levelFile.is_open()) {
-		printf("Error opening level file!");
+		Logs::logF << "Error opening level file!";
 		return false;
 	}
 
@@ -40,28 +40,22 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	
 	levelFile >> level->mapTextureW >> level->mapTextureH;
 
-	int w, h;
-	levelFile >> h >> w;
+	levelFile >> level->mapH >> level->mapW;
 
-	int** a = new int* [h];
-	for (int i = 0; i < h; ++i) {
-		a[i] = new int[w];
+	int** a = new int* [level->mapH];
+	for (int i = 0; i < level->mapH; ++i) {
+		a[i] = new int[level->mapW];
 	}
 
-	for (int i = 0; i < h; ++i) {
-		for (int j = 0; j < w; ++j) {
+	for (int i = 0; i < level->mapH; ++i) {
+		for (int j = 0; j < level->mapW; ++j) {
 			levelFile >> a[i][j];
 		}
 	}
 
-	int smFlag = 0;
-	levelFile >> smFlag;
+	levelFile >> level->specialMechanics;
 
-
-	level->mapH = h;
-	level->mapW = w;
 	level->map = a;
-	level->specialMechanics = smFlag;
 
 	levelFile >> level->playerNo >> level->AIno;
 	
@@ -75,8 +69,13 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	levelFile.get();
 	levelFile.get(tilesetPath, 26, '\n');
 
-	TextureManager::Texture[TextureManager::LevelMap] = TextureManager::loadTexture(mapPath); 
-	TextureManager::Texture[TextureManager::LevelTileSet] = TextureManager::loadTexture(tilesetPath);
+	if (!(TextureManager::Texture[TextureManager::LevelMap] = TextureManager::loadTexture(mapPath))) {
+		return false;
+	}
+
+	if (!(TextureManager::Texture[TextureManager::LevelTileSet] = TextureManager::loadTexture(tilesetPath))) {
+		return false;
+	}
 
 	Obstacle1::loadAnimationStates(&levelFile);
 	Obstacle2::loadAnimationStates(&levelFile);
@@ -88,11 +87,13 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 	//load player sprite sheet
 	std::ifstream playerFile("Resources/player1.txt"); 
 	if (!playerFile.is_open()) {
-		printf("Error opening player file!\n");
+		Logs::logF << "Error opening player info file!\n";
 		return false;
 	}
 
-	TextureManager::Texture[TextureManager::Player1] = TextureManager::loadTexture("Resources/p1sprites.png");
+	if (!(TextureManager::Texture[TextureManager::Player1] = TextureManager::loadTexture("Resources/p1sprites.png"))) {
+		return false;
+	}
 	
 	Player::loadAnimationStates(&playerFile);
 
@@ -100,22 +101,26 @@ bool LevelLoader::loadLevel(Level* level, int levelId) {
 
 	playerFile.open("Resources/player1.txt");
 	if (!playerFile.is_open()) {
-		printf("Error opening AI player file!\n");
+		Logs::logF << "Error opening AI player info file!\n";
 		return false;
 	}
 
-	TextureManager::Texture[TextureManager::PlayerAI] = TextureManager::loadTexture("Resources/AIpsprites.png");
+	if (!(TextureManager::Texture[TextureManager::PlayerAI] = TextureManager::loadTexture("Resources/AIpsprites.png"))) {
+		return false;
+	}
 
 	AIplayer::loadAnimationStates(&playerFile);
 	playerFile.close();
 
 	std::ifstream bombFile("Resources/bomb.txt");
 	if (!bombFile.is_open()) {
-		printf("Error opening bomb file!\n");
+		Logs::logF<<"Error opening bomb info file!\n";
 		return false;
 	}
 
-	TextureManager::Texture[TextureManager::BombTileSet] = TextureManager::loadTexture("Resources/bombtileset.png");
+	if (!(TextureManager::Texture[TextureManager::BombTileSet] = TextureManager::loadTexture("Resources/bombtileset.png"))) {
+		return false;
+	}
 
 	Bomb::loadAnimationStates(&bombFile);
 	Blast::loadAnimationStates(&bombFile);

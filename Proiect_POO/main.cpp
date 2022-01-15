@@ -1,5 +1,6 @@
 #include "Game.h"
 
+
 int main() {
 	Game G;
 	G.Init();
@@ -11,6 +12,7 @@ int main() {
 			if (e.type == SDL_QUIT)
 				isRunning = false;
 			Menu::clearFlags();
+			Mix_PlayMusic(SoundManager::BGM[SoundManager::Menu], -1);
 			while (G.Menus[Game::Main]->getMainMenuFlag() && !(G.Menus[Game::Main]->getQuitFlag()) && isRunning) {
 				while (SDL_PollEvent(&e) != 0) {
 					if (e.type == SDL_QUIT)
@@ -25,6 +27,7 @@ int main() {
 				Timer::setDTime();
 			}
 			if (G.Menus[Game::Main]->getLoadLevelFlag()) {
+				Mix_HaltMusic();
 				if (G.level == NULL) {
 					G.level = new Level;
 				}
@@ -32,14 +35,16 @@ int main() {
 				G.level->Init();
 
 				int pauseMenuTimer = 0;
+				Mix_PlayMusic(SoundManager::BGM[SoundManager::Game], -1);
 				while (G.levelLoader.levelLoaded && isRunning) {
 					SDL_PollEvent(&e);
 					const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 					if (currentKeyStates[SDL_SCANCODE_ESCAPE] && pauseMenuTimer >= 250) {
 						Menu::setPauseMenuFlag();
+						Mix_Pause(-1);
 						SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 640, 480);
 						if (TempTexture == NULL) {
-							printf("Unable to render blank background texture! SDL Error: %s\n", SDL_GetError());
+							Logs::logF << "Unable to render blank background texture! SDL Error: " << SDL_GetError() << std::endl;
 						}
 						else {
 							SDL_SetRenderTarget(TextureManager::Renderer, TempTexture);
@@ -72,6 +77,8 @@ int main() {
 						}
 						pauseMenuTimer = 0;
 						if (G.Menus[Game::Pause]->getReloadFlag()) {
+							Mix_HaltMusic();
+							Mix_HaltChannel(-1);
 							G.levelLoader.unloadLevel(G.level);
 							G.level = NULL;
 							Menu::clearFlags();
@@ -79,15 +86,14 @@ int main() {
 							G.Menus[Game::Main]->Show();
 						}
 						else if (G.Menus[Game::Pause]->getQuitFlag()) {
+							Mix_HaltMusic();
+							Mix_HaltChannel(-1);
 							G.levelLoader.unloadLevel(G.level);
 							G.level = NULL;
 						}
 					}
-					//if (currentKeyStates[SDL_SCANCODE_SPACE]) {
-					//	if(G.level)
-					//		G.level->objTable[2][0]->setAnimState(1);
-					//}
 					else if (G.level != NULL) {
+						Mix_Resume(-1);
 						if (G.level->Player1 != NULL && !G.level->Player1->isDead) {
 							if (currentKeyStates[SDL_SCANCODE_W]) {
 								G.level->Player1->Update(Timer::getDTime(), G.level->checkCollision(G.level->Player1), G.level->Player1->setDirection(Player::Up), G.level->Player1->setSpeed(2));
@@ -146,10 +152,11 @@ int main() {
 						int vCheck = G.level->Show();
 
 						if (vCheck == -1) {
+							Mix_HaltChannel(-1);
 							Menu::setPauseMenuFlag();
 							SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 640, 480);
 							if (TempTexture == NULL) {
-								printf("Unable to render blank background texture! SDL Error: %s\n", SDL_GetError());
+								Logs::logF << "Unable to render blank background texture! SDL Error: " << SDL_GetError() << std::endl;
 							}
 							else {
 								SDL_SetRenderTarget(TextureManager::Renderer, TempTexture);
@@ -193,10 +200,11 @@ int main() {
 							}
 						}
 						if (vCheck == 1) {
+							Mix_HaltChannel(-1);
 							Menu::setPauseMenuFlag();
 							SDL_Texture* TempTexture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 640, 480);
 							if (TempTexture == NULL) {
-								printf("Unable to render blank background texture! SDL Error: %s\n", SDL_GetError());
+								Logs::logF << "Unable to render blank background texture! SDL Error: " << SDL_GetError() << std::endl;
 							}
 							else {
 								SDL_SetRenderTarget(TextureManager::Renderer, TempTexture);

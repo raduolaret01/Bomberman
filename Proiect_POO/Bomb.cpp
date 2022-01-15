@@ -5,6 +5,7 @@ int Bomb::numberOfAnimStates = 2;
 
 Bomb::Bomb() : SolidObj() {
 	tick = 0;
+	blastCount = 0;
 	range = 1;
 	owner = NULL;
 	currentAnimState = animationStates;
@@ -13,6 +14,7 @@ Bomb::Bomb() : SolidObj() {
 
 Bomb::Bomb(const SDL_Point coords, const int w, const int h, Player* placer) : SolidObj(coords, w, h) {
 	tick = 0;
+	blastCount = 0;
 	this->range = placer->range;
 	owner = placer;
 	currentAnimState = animationStates;
@@ -62,6 +64,7 @@ int Bomb::Show(SDL_Point Offset) {
 				blast[i]->Show(Offset);
 			}
 		}
+
 	}
 	if (tick == 6 && currentAnimState == animationStates) {
 		return 1;

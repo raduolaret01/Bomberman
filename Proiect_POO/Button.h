@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include "TextureManager.h"
+#include "SoundManager.h"
 
 class Button{
 private:
@@ -9,6 +10,7 @@ private:
 	char* label;
 	SDL_Rect dim;
 	void (*functionality)(void);
+	bool soundFlag;
 public:
 	Button();
 	Button(SDL_Rect, void (*function)(void), const char*);

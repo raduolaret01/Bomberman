@@ -5,6 +5,7 @@ Button::Button() {
 	label = NULL;
 	dim.x = dim.y = dim.w = dim.h = 0;
 	functionality = NULL;
+	soundFlag = false;
 }
 
 Button::Button(SDL_Rect dim, void(*function)(void), const char* label) {
@@ -13,10 +14,11 @@ Button::Button(SDL_Rect dim, void(*function)(void), const char* label) {
 	strcpy_s(this->label, len, label);
 	this->dim = dim;
 	functionality = function;
+	soundFlag = false;
 
 	Texture = SDL_CreateTexture(TextureManager::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, dim.w, dim.h);
 	if (Texture == NULL) {
-		printf("Unable to render blank button texture! SDL_ttf Error: %s\n", TTF_GetError());
+		Logs::logF << "Unable to render blank button texture! SDL Error: " << SDL_GetError() << std::endl;
 	}
 	else {
 		SDL_SetRenderTarget(TextureManager::Renderer, Texture);
@@ -34,14 +36,14 @@ Button::Button(SDL_Rect dim, void(*function)(void), const char* label) {
 
 		SDL_Surface* textSurface = TTF_RenderText_Solid(TextureManager::Font[0], this->label, { 0,0,0 });
 		if (textSurface == NULL) {
-			printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+			Logs::logF << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
 		}
 		else {
 			int tWidth, tHeight;
 			//Create texture from surface pixels
 			SDL_Texture* tTexture = SDL_CreateTextureFromSurface(TextureManager::Renderer, textSurface);
 			if (tTexture == NULL) {
-				printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+				Logs::logF << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
 			}
 			else {
 				//Get image dimensions
@@ -95,19 +97,25 @@ void Button::handleEvent(SDL_Event* e) {
 			switch (e->type) {
 			case SDL_MOUSEMOTION:
 				if (SDL_SetTextureColorMod(Texture, 0x7F, 0x7F, 0x7F) < 0) {
-					printf("Button Color Modulation failed! SDL Error: %s", SDL_GetError());
+					Logs::logF << "Button Color Modulation failed! SDL Error: " << SDL_GetError() << std::endl;
+				}
+				if (!soundFlag) {
+					Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::MouseOver], 0);
+					soundFlag = true;
 				}
 				break;
 
 			case SDL_MOUSEBUTTONUP:
+				Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Click], 0);
 				functionality();
 				break;
 			}
 		}
 		else {
 			if (SDL_SetTextureColorMod(Texture, 0xFF, 0xFF, 0xFF) < 0) {
-				printf("Button Color Modulation failed! SDL Error: %s", SDL_GetError());
+				Logs::logF << "Button Color Modulation failed! SDL Error: " << SDL_GetError() << std::endl;
 			}
+			soundFlag = false;
 		}
 	}
 }

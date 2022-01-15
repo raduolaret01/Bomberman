@@ -38,14 +38,14 @@ SDL_Texture* TextureManager::loadTexture(const char* path) {
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load(path);
 	if (loadedSurface == NULL) {
-		printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
+		Logs::logF << "Unable to load image at " << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
 		return NULL;
 	}
 
 	//Create texture from surface pixels
 	newTexture = SDL_CreateTextureFromSurface(Renderer, loadedSurface);
 	if (newTexture == NULL) {
-		printf("Unable to create texture from %s! SDL_image Error: %s\n", path, IMG_GetError());
+		Logs::logF << "Unable to create texture from " << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
 	}
 
 	//Get rid of old loaded surface
@@ -68,7 +68,7 @@ void TextureManager::freeTextures() {
 TTF_Font* TextureManager::loadFont(const char* path,int pxSize) {
 	TTF_Font* newFont = TTF_OpenFont(path, pxSize);
 	if (newFont == NULL) {
-		printf("Loading font failed! SLD_ttf Error: %s\n", TTF_GetError());
+		Logs::logF << "Loading font failed! SLD_ttf Error:" << TTF_GetError() << std::endl;
 	}
 	return newFont;
 }

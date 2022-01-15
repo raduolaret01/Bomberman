@@ -14,14 +14,6 @@ AnimationState::~AnimationState() {
 	}
 }
 
-//bool AnimationState::operator==(const AnimationState& target) {
-//	return (textureArea.x == target.textureArea.x && textureArea.y == target.textureArea.y && textureArea.w == target.textureArea.w && textureArea.h == target.textureArea.h && numberOfFrames == target.numberOfFrames && frameOffset == target.frameOffset && secondsPerFrame == target.secondsPerFrame);
-//}
-//
-//AnimationState& AnimationState::operator=(const AnimationState& source) {
-//
-//}
-
 AnimationState* GameObj::animationStates = NULL;
 int GameObj::numberOfAnimStates = 0;
 

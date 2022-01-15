@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TextureManager.h"
+#include "SoundManager.h"
 #include "Button.h"
 
 class Menu {

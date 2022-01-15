@@ -152,6 +152,7 @@
     <ClCompile Include="GameObj.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
+    <ClCompile Include="logFile.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Obstacle.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="GameObj.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelLoader.h" />
+    <ClInclude Include="logFile.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Player.h" />

@@ -7,13 +7,10 @@
 struct AnimationState {
 	SDL_Rect textureArea;
 	int numberOfFrames, frameOffset;
-	int* secondsPerFrame;	
+	int* secondsPerFrame;
 
 	AnimationState();
 	~AnimationState();
-
-	//bool operator==(const AnimationState&);
-	//AnimationState& operator=(const AnimationState&);
 };
 
 struct Hitbox {

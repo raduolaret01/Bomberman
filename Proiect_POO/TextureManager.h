@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <fstream>
 
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -8,6 +9,7 @@
 #include <SDL_hints.h>
 #include <SDL_ttf.h>
 #include "Timer.h"
+#include "logFile.h"
 
 class TextureManager{
 public:
@@ -22,8 +24,8 @@ public:
 
 	enum FontEnum {
 		Menu,
-		BombCounter,
-		SmallText
+		BombCounter,	//unused
+		SmallText		//unused
 	};
 
 	static SDL_Texture* Texture[6];

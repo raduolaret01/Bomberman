@@ -8,6 +8,7 @@ protected:
 	int direction;
 	int speed;
 public:
+	int soundChannel;
 	int range, placedBombs, maxPlacedBombs;
 	bool isDead;
 
@@ -43,7 +44,6 @@ public:
 
 	void Update(int, float, bool, bool);
 
-	//static bool loadAnimationStates(void);
 	static bool loadAnimationStates(std::ifstream* input);
 	static void unloadAnimationStates(void);
 };

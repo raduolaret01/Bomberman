@@ -122,12 +122,12 @@ MainMenu::~MainMenu() {
 
 void MainMenu::Init() {
 	ButtonArray = new Button * [6];
-	ButtonArray[Quit] = new Button({ 220,320,200,60 }, &Menu::setQuitFlag, "Quit");
-	ButtonArray[Load_1p_1] = new Button({ 140,120,120,60 }, &Menu::loadLevel1, "Level 1");
-	ButtonArray[Load_1p_2] = new Button({ 260,120,120,60 }, &Menu::loadLevel2, "Level 2");
-	ButtonArray[Load_1p_3] = new Button({ 380,120,120,60 }, &Menu::loadLevel3, "Level 3");
-	ButtonArray[Load_2p_coop] = new Button({ 80,180,240,60 }, &Menu::loadLevel4, "2 Player CO-OP");
-	ButtonArray[Load_2p_vs] = new Button({ 320,180,240,60 }, &Menu::loadLevel5, "2 Player Versus");
+	ButtonArray[Quit] = new Button({ 220,360,200,60 }, &Menu::setQuitFlag, "Quit");
+	ButtonArray[Load_1p_1] = new Button({ 140,180,120,60 }, &Menu::loadLevel1, "Level 1");
+	ButtonArray[Load_1p_2] = new Button({ 260,180,120,60 }, &Menu::loadLevel2, "Level 2");
+	ButtonArray[Load_1p_3] = new Button({ 380,180,120,60 }, &Menu::loadLevel3, "Level 3");
+	ButtonArray[Load_2p_coop] = new Button({ 80,240,240,60 }, &Menu::loadLevel4, "2 Player CO-OP");
+	ButtonArray[Load_2p_vs] = new Button({ 320,240,240,60 }, &Menu::loadLevel5, "2 Player Versus");
 }
 
 void MainMenu::Show() {
@@ -138,14 +138,14 @@ void MainMenu::Show() {
 	//Transform title text into a texture and send it to renderer
 	SDL_Surface* textSurface = TTF_RenderText_Solid(TextureManager::Font[0], "Bomberman", { 0xFF,0xFF,0xFF });
 	if (textSurface == NULL) {
-		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		Logs::logF << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
 	}
 	else {
 		int tWidth, tHeight;
 		//Create texture from surface pixels
 		SDL_Texture* tTexture = SDL_CreateTextureFromSurface(TextureManager::Renderer, textSurface);
 		if (tTexture == NULL) {
-			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+			Logs::logF << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
 		}
 		else {
 			//Get text image dimensions
@@ -154,10 +154,10 @@ void MainMenu::Show() {
 
 			//Set text to render centered on x axis
 			SDL_Rect temp;
-			temp.x = (640 - tWidth) / 2;
+			temp.x = (640 - tWidth*2) / 2;
 			temp.y = 30;
-			temp.w = tWidth;
-			temp.h = tHeight;
+			temp.w = tWidth*2;
+			temp.h = tHeight*2;
 			SDL_RenderCopy(TextureManager::Renderer, tTexture, NULL, &temp);
 			//Get rid of old surface
 			SDL_FreeSurface(textSurface);
@@ -168,7 +168,6 @@ void MainMenu::Show() {
 	for (int i = 0; i < 6; ++i) {
 		ButtonArray[i]->Show();
 	}
-
 	SDL_RenderPresent(TextureManager::Renderer);
 }
 
@@ -224,14 +223,14 @@ void PauseMenu::Show() {
 	//Transform title text into a texture and send it to renderer
 	SDL_Surface* textSurface = TTF_RenderText_Solid(TextureManager::Font[0], "Paused", { 0xFF,0xFF,0xFF });
 	if (textSurface == NULL) {
-		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		Logs::logF << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
 	}
 	else {
 		int tWidth, tHeight;
 		//Create texture from surface pixels
 		SDL_Texture* tTexture = SDL_CreateTextureFromSurface(TextureManager::Renderer, textSurface);
 		if (tTexture == NULL) {
-			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+			Logs::logF << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
 		}
 		else {
 			//Get text image dimensions
@@ -311,14 +310,14 @@ void GameOverMenu::Show() {
 	//Transform title text into a texture and send it to renderer
 	SDL_Surface* textSurface = TTF_RenderText_Solid(TextureManager::Font[0], "Game Over", { 0xFF,0xFF,0xFF });
 	if (textSurface == NULL) {
-		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		Logs::logF << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
 	}
 	else {
 		int tWidth, tHeight;
 		//Create texture from surface pixels
 		SDL_Texture* tTexture = SDL_CreateTextureFromSurface(TextureManager::Renderer, textSurface);
 		if (tTexture == NULL) {
-			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+			Logs::logF << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
 		}
 		else {
 			//Get text image dimensions
@@ -397,14 +396,14 @@ void VictoryMenu::Show() {
 	//Transform title text into a texture and send it to renderer
 	SDL_Surface* textSurface = TTF_RenderText_Solid(TextureManager::Font[0], "Victory!", { 0xFF,0xFF,0xFF });
 	if (textSurface == NULL) {
-		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		Logs::logF << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
 	}
 	else {
 		int tWidth, tHeight;
 		//Create texture from surface pixels
 		SDL_Texture* tTexture = SDL_CreateTextureFromSurface(TextureManager::Renderer, textSurface);
 		if (tTexture == NULL) {
-			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+			Logs::logF << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
 		}
 		else {
 			//Get text image dimensions

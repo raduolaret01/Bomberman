@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <SDL_mixer.h>
-
+#include "logFile.h"
 
 
 
@@ -16,12 +16,12 @@ public:
 
 	enum SFXEnum {
 		Splash,
+		MouseOver,
 		Click,
 		Bomb_Place,
 		Bomb_Fuze,
 		Bomb_Boom,
 		Step,
-		PowerUp_PickUp,
 		NPC_Death,
 		Player_Death
 	};

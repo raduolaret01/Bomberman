@@ -5,6 +5,13 @@ int Player::numberOfAnimStates = 8;
 AnimationState* Player::animationStates = NULL;
 
 Player::Player() : SolidObj() {
+	soundChannel = Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Step], -1);
+	if (soundChannel == -1) {
+		Logs::logF << "Sound system error: " << Mix_GetError() << std::endl;
+	}
+	else {
+		Mix_Pause(soundChannel);
+	}
 	range = 1;
 	direction = 0;
 	currentAnimState = animationStates;
@@ -15,6 +22,13 @@ Player::Player() : SolidObj() {
 }
 
 Player::Player(const SDL_Point coord, const int w, const int h) : SolidObj(coord, w, h) {
+	soundChannel = Mix_PlayChannel(-1, SoundManager::SFX[SoundManager::Step], -1);
+	if (soundChannel == -1) {
+		Logs::logF << "Sound system error: " << Mix_GetError() << std::endl;
+	}
+	else {
+		Mix_Pause(soundChannel);
+	}
 	range = 1;
 	direction = 0;
 	currentAnimState = animationStates;
@@ -43,9 +57,19 @@ bool Player::isOnLastAnimFrame() {
 
 int Player::Show(SDL_Point Offset) {
 	currentFrameTime += Timer::getDTime();
+	if (soundChannel != -1) {
+		if (speed == 0) {
+			Mix_Pause(soundChannel);
+		}
+		else {
+			Mix_Resume(soundChannel);
+		}
+	}
+
 	if (currentFrameTime / 60 >= currentAnimState->secondsPerFrame[currentAnimFrame]) {
 		
 		if (currentAnimState == animationStates + Defeat && isOnLastAnimFrame()) {
+			Mix_HaltChannel(soundChannel);
 			return -1;
 		}
 
@@ -68,7 +92,6 @@ int Player::Show(SDL_Point Offset) {
 	SDL_Rect TempDest = { (int)((hitbox.x - spriteOffset.x) * 2 + Offset.x),(int)((hitbox.y - spriteOffset.y) * 2 + Offset.y),currentAnimState->textureArea.w * 2,currentAnimState->textureArea.h * 2 };
 	SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &TempDest, 0, NULL, flip);
 
-	//SDL_RenderCopyEx(TextureManager::Renderer, TextureManager::Texture[TextureManager::Player1], &TempSrc, &hitbox, 0, NULL, flip);
 	return 0;
 }
 
@@ -137,9 +160,6 @@ void Player::Update(int dTime, float collisionDist, bool dirChanged, bool spdCha
 			break;
 		}
 	}
-	//printf("%d\n", dTime);
-	//int mapX = (int)getHitbox().x / 16, mapY = (int)getHitbox().y / 16;
-	//printf("%d,%d\n", mapY, mapX);
 	
 }
 
@@ -163,23 +183,6 @@ bool Player::setSpeed(int sp) {
 int Player::getDirection() {
 	return direction;
 }
-
-//bool Player::loadAnimationStates() {
-//	animationStates = new AnimationState[numberOfAnimStates];
-//
-//	animationStates[0].textureArea.x = 7;
-//	animationStates[0].textureArea.y = 20;
-//	animationStates[0].textureArea.w = 16;
-//	animationStates[0].textureArea.h = 24;
-//	animationStates[0].numberOfFrames = 1;
-//	animationStates[0].frameOffset = 0;
-//	animationStates[0].secondsPerFrame = new int[animationStates[0].numberOfFrames];
-//	for (int j = 0; j < animationStates[0].numberOfFrames; ++j) {
-//		animationStates[0].secondsPerFrame[j] = 1;
-//	}
-//
-//	return true;
-//}
 
 bool Player::loadAnimationStates(std::ifstream* input) {
 	animationStates = new AnimationState[numberOfAnimStates];
