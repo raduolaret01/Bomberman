@@ -18,15 +18,15 @@ AnimationState* GameObj::animationStates = NULL;
 int GameObj::numberOfAnimStates = 0;
 
 GameObj::GameObj() {
-	hitbox = { 0,0,0,0 };
+	hitbox = { 0.0f,0.0f,0,0 };
 	currentAnimState = NULL;
 	currentAnimFrame = 0;
 	currentFrameTime = 0;
 }
 
 GameObj::GameObj(const SDL_Point coords, const int w, const int h) {
-	hitbox.x = coords.x;
-	hitbox.y = coords.y;
+	hitbox.x = (float)coords.x;
+	hitbox.y = (float)coords.y;
 	hitbox.w = w;
 	hitbox.h = h;
 	currentAnimState = NULL;

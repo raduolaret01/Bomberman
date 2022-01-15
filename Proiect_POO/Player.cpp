@@ -43,7 +43,7 @@ Player::~Player() {
 }
 
 int Player::getAnimState() {
-	return ((currentAnimState - animationStates) / sizeof(AnimationState));
+	return (int)((currentAnimState - animationStates) / sizeof(AnimationState));
 }
 
 void Player::setAnimState(int x) {

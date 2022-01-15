@@ -45,7 +45,7 @@ Obstacle1::~Obstacle1() {
 }
 
 int Obstacle1::getAnimState() {
-	return ((currentAnimState - animationStates) / sizeof(AnimationState));
+	return (int)((currentAnimState - animationStates) / sizeof(AnimationState));
 }
 
 void Obstacle1::setAnimState(int x) {
@@ -73,7 +73,7 @@ int Obstacle1::Show(SDL_Point Offset) {
 		}
 	}
 	SDL_Rect TempSrc = { currentAnimState->textureArea.x + currentAnimFrame * currentAnimState->frameOffset,currentAnimState->textureArea.y,currentAnimState->textureArea.w,currentAnimState->textureArea.h };
-	SDL_Rect TempDest = { hitbox.x * 2 + Offset.x,hitbox.y * 2 + Offset.y,hitbox.w * 2,hitbox.h * 2 };
+	SDL_Rect TempDest = { (int)hitbox.x * 2 + Offset.x,(int)hitbox.y * 2 + Offset.y,(int)hitbox.w * 2,(int)hitbox.h * 2 };
 	SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelTileSet], &TempSrc, &TempDest);
 
 	return 0;
@@ -114,7 +114,7 @@ Obstacle2::~Obstacle2() {
 }
 
 int Obstacle2::getAnimState() {
-	return ((currentAnimState - animationStates) / sizeof(AnimationState));
+	return (int)((currentAnimState - animationStates) / sizeof(AnimationState));
 }
 
 void Obstacle2::setAnimState(int x) {
@@ -143,7 +143,7 @@ int Obstacle2::Show(SDL_Point Offset) {
 		}
 	}
 	SDL_Rect TempSrc = { currentAnimState->textureArea.x + currentAnimFrame * currentAnimState->frameOffset,currentAnimState->textureArea.y,currentAnimState->textureArea.w,currentAnimState->textureArea.h };
-	SDL_Rect TempDest = { hitbox.x * 2 + Offset.x,hitbox.y * 2 + Offset.y,hitbox.w * 2,hitbox.h * 2 };
+	SDL_Rect TempDest = { (int)hitbox.x * 2 + Offset.x,(int)hitbox.y * 2 + Offset.y,(int)hitbox.w * 2,(int)hitbox.h * 2 };
 	SDL_RenderCopy(TextureManager::Renderer, TextureManager::Texture[TextureManager::LevelTileSet], &TempSrc, &TempDest);
 
 	return 0;

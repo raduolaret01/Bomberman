@@ -9,7 +9,7 @@ Button::Button() {
 }
 
 Button::Button(SDL_Rect dim, void(*function)(void), const char* label) {
-	int len = strlen(label) + 1;
+	int len = (int)strlen(label) + 1;
 	this->label = new char[len];
 	strcpy_s(this->label, len, label);
 	this->dim = dim;

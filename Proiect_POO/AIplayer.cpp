@@ -18,7 +18,7 @@ AIplayer::~AIplayer() {
 }
 
 int AIplayer::getAnimState() {
-	return ((currentAnimState - animationStates) / sizeof(AnimationState));
+	return (int)((currentAnimState - animationStates) / sizeof(AnimationState));
 }
 
 void AIplayer::setAnimState(int x) {

@@ -29,7 +29,7 @@ Bomb::~Bomb() {
 }
 
 int Bomb::getAnimState() {
-	return ((currentAnimState - animationStates) / sizeof(AnimationState));
+	return (int)((currentAnimState - animationStates) / sizeof(AnimationState));
 }
 
 void Bomb::setAnimState(int x) {
@@ -128,7 +128,7 @@ Blast::~Blast() {
 }
 
 int Blast::getAnimState() {
-	return ((currentAnimState - animationStates) / sizeof(AnimationState));
+	return (int)((currentAnimState - animationStates) / sizeof(AnimationState));
 }
 
 void Blast::setAnimState(int x) {
