@@ -51,6 +51,22 @@ Level::~Level() {
 		delete[] objectCount;
 		objectCount = NULL;
 	}
+	if (Player1) {
+		delete Player1;
+		Player1 = NULL;
+	}
+	if (Player2) {
+		delete Player2;
+		Player2 = NULL;
+	}
+	if (AI) {
+		delete[] AI;
+		AI = NULL;
+	}
+	if (bombs) {
+		delete[] bombs;
+		bombs = NULL;
+	}
 }
 
 void Level::Init() {
