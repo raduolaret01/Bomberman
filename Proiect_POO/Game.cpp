@@ -100,5 +100,7 @@ void Game::Quit(void) {
 	TextureManager::freeFonts();
 	SoundManager::freeSounds();
 	IMG_Quit();
+	Mix_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }

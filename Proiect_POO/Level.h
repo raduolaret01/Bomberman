@@ -24,7 +24,7 @@ public:
 		BombT,
 		Conveyor
 	};
-	int specialMechanics;
+	int specialMechanics;	//unused
 	enum Mechanics {
 		None,
 		ConveyorBelts,
