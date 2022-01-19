@@ -821,6 +821,7 @@ void Level::AIDecisionMaking(AIplayer* ai) {
 			ai->Update(Timer::getDTime(), -1.0f, false, ai->setSpeed(0));
 		}
 	}
+	delete[] validDirection;
 }
 
 bool Level::isInRangeOfBomb(int x, int y) {

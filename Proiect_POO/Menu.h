@@ -6,7 +6,7 @@
 
 class Menu {
 protected:
-	//Flags are necessary to avoid circular dependecy with Game
+	//Flags are necessary to avoid circular dependency with Game
 	static bool quitFlag;
 	static int loadLevelFlag;
 	static bool reloadFlag;
